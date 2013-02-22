@@ -1,8 +1,10 @@
-package project.face;
+package ie.markmein.face;
 import static com.googlecode.javacv.cpp.opencv_core.*;
+import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_objdetect.*;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import com.googlecode.javacv.cpp.opencv_core.CvMemStorage;
@@ -76,7 +78,14 @@ public class FaceOperations {
 		cvEqualizeHist(tempImg, normalisedImg);
 		return normalisedImg;
 	}
-	public static ArrayList<IplImage> extractFaces(IplImage aImage){
+	public static IplImage BuffImg2IplImg(BufferedImage aImage){
+		return IplImage.createFrom(aImage, CV_LOAD_IMAGE_GRAYSCALE);
+	}
+	public static BufferedImage IplImg2BuffImage(IplImage aImage){
+		return aImage.getBufferedImage();
+	}
+	public static ArrayList<IplImage> extractFaces(IplImage aImage, ArrayList<FaceFrame> aFaces){
 		
+		return null;
 	}
 }

@@ -1,4 +1,4 @@
-package project.face;
+package ie.markmein.face;
 
 import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer;
 
@@ -68,14 +68,17 @@ public class FaceRecogniser {
 	 */
 	int trainingImagesC, labelsC = 0;
 	
-	FaceRecogniser() {
+	/*
+	 * Constructors
+	 */
+	public FaceRecogniser() {
 		initialSetUp();
 	}
-	FaceRecogniser(String aPath){
+	public FaceRecogniser(String aPath){
 		initialSetUp();
 		loadTrainingDate(aPath);
 	}
-	FaceRecogniser(int aPersonCount){
+	public FaceRecogniser(int aPersonCount){
 		initialSetUp();
 		initialiseRecogniser(aPersonCount);
 		
@@ -133,7 +136,7 @@ public class FaceRecogniser {
 		}
 	}
 	public void loadTrainingDate(String aPath){
-		recogniser.load(aPath + "TR_Data.xml");
+		recogniser.load(aPath + TR_DATA_FILE);
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(aPath + TR_NAMES_FILE));
 			names = (Map<Integer, String>) is.readObject();

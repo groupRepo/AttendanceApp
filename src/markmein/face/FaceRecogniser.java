@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -122,6 +123,25 @@ public class FaceRecogniser {
 			}
 		}
 		return name;
+	}
+	public ArrayList<String> recogniseMany(String aPath){
+		ArrayList<String> names = new ArrayList<String>();
+		if(trained){
+			// Extract faces
+			ArrayList<IplImage> faces = FaceOperations.extractFaces(cvLoadImage(aPath), FaceOperations.getFacesCoords(cvLoadImage(aPath)));
+			//recognise
+			for(IplImage f : faces){
+				String tempName = null;
+				tempName = recognise(f);
+				
+				// TODO to be tested !!!!!
+				if(tempName != null && !names.contains(tempName)){
+					names.add(tempName);
+				}
+			}
+			
+		}
+		return names;
 	}
 	public void saveTrainingData(String aPath){
 		recogniser.save(aPath + TR_DATA_FILE);

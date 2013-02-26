@@ -20,7 +20,7 @@ public class TestClient {
 	public static void main(String[] args) throws InterruptedException {
 		 Socket sock;
          try {
-             sock = new Socket("localhost", 1149); 
+             sock = new Socket("localhost", 2221); 
              System.out.println("Connecting...");
 
               // sendfile
@@ -31,10 +31,10 @@ public class TestClient {
                    BufferedInputStream bis = new BufferedInputStream(fis);
                    bis.read(mybytearray,0,mybytearray.length);
                    OutputStream os = sock.getOutputStream();
-                   DataOutputStream dOutStream = new DataOutputStream(os);
+                   ObjectOutputStream dOutStream = new ObjectOutputStream(os);
                    System.out.println("Sending...");
-                   dOutStream.writeInt((int) myFile.length());
                    dOutStream.writeUTF("DUPA");
+                   dOutStream.writeInt((int) myFile.length());
                    dOutStream.write(mybytearray,0,mybytearray.length);
                    dOutStream.flush();
                    InputStream is = sock.getInputStream();
@@ -42,8 +42,8 @@ public class TestClient {
                    sock.shutdownOutput();
                    System.out.println("Sent");
                    
-                  String ret = dis.readUTF();
-                  System.out.println(ret);
+                //  String ret = dis.readUTF();
+                //  System.out.println(ret);
                  sock.close();
          } catch (UnknownHostException e) {
              // TODO Auto-generated catch block

@@ -2,13 +2,15 @@ package ie.markmein.development;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,8 +18,6 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -65,154 +65,98 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			startActivityForResult(i, cameraData);
 			break;
 		case R.id.btProcess:
+			sendImageToServer = new SendImageToServer();
+			sendImageToServer.execute("tect");
+		}		
+	}
 
-			Handler handler = new Handler(Looper.getMainLooper());
-			handler.post(new Runnable(){
-
-				@Override
-				public void run() {
-
-					try {
-
-						Socket sock = new Socket("192.168.1.213", 1149); 
-						//File myFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "0.jpg"); 
-						//byte [] mybytearray  = new byte [(int)myFile.length()];
-						//FileInputStream fis = new FileInputStream(myFile);
-						//BufferedInputStream bis = new BufferedInputStream(fis);
-						//bis.read(mybytearray,0,mybytearray.length);
-
-						OutputStream os = sock.getOutputStream();
-						Log.e("Error", "In doInBackground 3" );
-						DataOutputStream dOutStream = new DataOutputStream(os);
-						//dOutStream.writeInt((int) myFile.length());
-						Log.e("Error", "In doInBackground 4" );
-						dOutStream.writeUTF("DUPA");
-						//dOutStream.write(mybytearray,0,mybytearray.length);
-						//dOutStream.flush();
-						//InputStream is = sock.getInputStream();
-						//DataInputStream dis = new DataInputStream(is);
-						//sock.shutdownOutput();
-						//String ret = dis.readUTF();
-						Log.e("Error", "In doInBackground 5" );
-						tvStatus.setText("Processing for sending 3");
-						sock.close();
-
-
-						/*tvStatus.setText("Processing for sending 2");
-					client = new Socket("localhost", 9999);
-					tvStatus.setText("Processing for sending 3");
-					//ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					tvStatus.setText("Processing for sending 4");
-					//bmp.compress(CompressFormat.JPEG, 100, baos);
-					tvStatus.setText("Processing for sending 5");
-					//byte[] imageByteArray = baos.toByteArray();
-					tvStatus.setText("Processing for sending 6");*/
-
-						/*fileInputStream = new FileInputStream(file);
-					bufferedInputStream = new BufferedInputStream(fileInputStream);
-					bufferedInputStream.read(imageByteArray, 0, imageByteArray.length);*/
-
-						/*outputStream = client.getOutputStream();
-					tvStatus.setText("Processing for sending 7");
-					outputStream.write(imageByteArray, 0, imageByteArray.length);
-					tvStatus.setText("Processing for sending 8");
-					outputStream.flush();
-					tvStatus.setText("Processing for sending 9");
-					bufferedInputStream.close();
-					tvStatus.setText("Processing for sending 10");
-					outputStream.close();
-					tvStatus.setText("Processing for sending 11");
-					client.shutdownOutput();
-					tvStatus.setText("Processing for sending 12");*/
-					}catch(Exception e){
-						tvStatus.setText("Error sending 1" + e.toString());
-
-						Log.e("Error", "File sending failed " + e.toString());
-					}
-				}});
-			//sendImageToServer = new SendImageToServer();
-			//sendImageToServer.execute("send");
-			break;
-			}		
-		}
-
-		@Override
-		protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-			super.onActivityResult(requestCode, resultCode, data);
-			if(resultCode == RESULT_OK){
-				Bundle extras = data.getExtras();
-				bmp = (Bitmap) extras.get("data");
-				iv.setImageBitmap(bmp);
-			}
-		}
-
-		public class SendImageToServer extends AsyncTask<String, Void, String>{
-
-			@Override
-			protected String doInBackground(String... params) {
-				Log.e("Error", "In doInBackground 1" );
-
-				// sock;
-				Log.e("Error", "In doInBackground 2" );
-				try {
-
-					Socket sock = new Socket("192.168.1.213", 1149); 
-					//File myFile = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "0.jpg"); 
-					//byte [] mybytearray  = new byte [(int)myFile.length()];
-					//FileInputStream fis = new FileInputStream(myFile);
-					//BufferedInputStream bis = new BufferedInputStream(fis);
-					//bis.read(mybytearray,0,mybytearray.length);
-
-					OutputStream os = sock.getOutputStream();
-					Log.e("Error", "In doInBackground 3" );
-					DataOutputStream dOutStream = new DataOutputStream(os);
-					//dOutStream.writeInt((int) myFile.length());
-					Log.e("Error", "In doInBackground 4" );
-					dOutStream.writeUTF("DUPA");
-					//dOutStream.write(mybytearray,0,mybytearray.length);
-					//dOutStream.flush();
-					//InputStream is = sock.getInputStream();
-					//DataInputStream dis = new DataInputStream(is);
-					//sock.shutdownOutput();
-					//String ret = dis.readUTF();
-					Log.e("Error", "In doInBackground 5" );
-					tvStatus.setText("Processing for sending 3");
-					sock.close();
-
-
-					/*tvStatus.setText("Processing for sending 2");
-				client = new Socket("localhost", 9999);
-				tvStatus.setText("Processing for sending 3");
-				//ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				tvStatus.setText("Processing for sending 4");
-				//bmp.compress(CompressFormat.JPEG, 100, baos);
-				tvStatus.setText("Processing for sending 5");
-				//byte[] imageByteArray = baos.toByteArray();
-				tvStatus.setText("Processing for sending 6");*/
-
-					/*fileInputStream = new FileInputStream(file);
-				bufferedInputStream = new BufferedInputStream(fileInputStream);
-				bufferedInputStream.read(imageByteArray, 0, imageByteArray.length);*/
-
-					/*outputStream = client.getOutputStream();
-				tvStatus.setText("Processing for sending 7");
-				outputStream.write(imageByteArray, 0, imageByteArray.length);
-				tvStatus.setText("Processing for sending 8");
-				outputStream.flush();
-				tvStatus.setText("Processing for sending 9");
-				bufferedInputStream.close();
-				tvStatus.setText("Processing for sending 10");
-				outputStream.close();
-				tvStatus.setText("Processing for sending 11");
-				client.shutdownOutput();
-				tvStatus.setText("Processing for sending 12");*/
-				}catch(Exception e){
-					tvStatus.setText("Error sending 1" + e.toString());
-
-					Log.e("Error", "File sending failed " + e.toString());
-				}
-				return null;
-			}
-
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(resultCode == RESULT_OK){
+			Bundle extras = data.getExtras();
+			bmp = (Bitmap) extras.get("data");
+			iv.setImageBitmap(bmp);
 		}
 	}
+
+	public class SendImageToServer extends AsyncTask<String, Void, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			Log.e("Error", "In doInBackground 1" );
+			//tvStatus.setText(":"+ Environment.getExternalStorageDirectory().getPath().toString());
+
+			Socket sock;
+			try {
+				sock = new Socket("172.20.10.7", 2221); 
+				
+				Log.e("Error", "In doInBackground 2" );
+				
+				OutputStream os = sock.getOutputStream();
+				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
+				dOutStream.writeUTF("CCC");
+				dOutStream.writeInt(3);
+				
+				byte arr[] = new byte[3];
+				for(byte b : arr){
+					char r = 'A';
+					b = (byte) r;
+				}
+				dOutStream.write(arr, 0, arr.length);
+				dOutStream.close();
+/*
+				// sendfile
+				File myFile = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +"0.jpg"); 
+				Log.e("Error", "In doInBackground 3" + myFile.getAbsolutePath());
+				tvStatus.setText(""+myFile.length() + " :"+ Environment.getExternalStorageDirectory().getPath().toString());
+				Log.e("Error", "In doInBackground 4" );
+				byte [] mybytearray  = new byte [(int)myFile.length()];
+				Log.e("Error", "In doInBackground 5" + myFile.length() );
+				FileInputStream fis = new FileInputStream(myFile);
+				Log.e("Error", "In doInBackground 6" );
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				Log.e("Error", "In doInBackground 7" );
+				bis.read(mybytearray,0,mybytearray.length);
+				Log.e("Error", "In doInBackground 8" );
+				OutputStream os = sock.getOutputStream();
+				Log.e("Error", "In doInBackground 9" );
+				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
+				Log.e("Error", "In doInBackground 10" );
+				tvStatus.setText("Sending...");
+				Log.e("Error", "In doInBackground 11" );
+				dOutStream.writeUTF("DDD");
+				Log.e("Error", "In doInBackground 12" );
+				dOutStream.writeInt((int) myFile.length());
+				Log.e("Error", "In doInBackground 13" );
+				dOutStream.write(mybytearray,0,mybytearray.length);
+				Log.e("Error", "In doInBackground 14" );
+				dOutStream.flush();
+				Log.e("Error", "In doInBackground 15" );
+				InputStream is = sock.getInputStream();
+				Log.e("Error", "In doInBackground 16" );
+				DataInputStream dis = new DataInputStream(is);
+				Log.e("Error", "In doInBackground 17" );
+				sock.shutdownOutput();
+				Log.e("Error", "In doInBackground 18" );
+				tvStatus.setText("Sent");
+*/
+				//  String ret = dis.readUTF();
+				//  System.out.println(ret);
+				sock.close();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (Exception e) {
+				// TODO Auto-generated catch block
+				Log.e("Error", "In doInBackground 21" + e.toString() );
+			}
+			return null;
+		}
+
+	}
+}

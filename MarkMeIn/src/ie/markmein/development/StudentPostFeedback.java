@@ -13,7 +13,7 @@ public class StudentPostFeedback extends Activity implements View.OnClickListene
 	ArrayAdapter<String> adapter;
 	Spinner spAtTag, spHashTag;
 	Button btSubmitTweet, btClearTweet, btMainMenu;
-
+//test
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

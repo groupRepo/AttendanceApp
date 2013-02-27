@@ -1,4 +1,6 @@
 package ie.markmein.server;   
+//import ie.markmein.db.DBHandling;
+
 import java.io.*;
 import java.net.*;
 
@@ -6,7 +8,7 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
         // create socket
-        ServerSocket servsock = new ServerSocket(1149);
+        ServerSocket servsock = new ServerSocket(2221);
         
         while(true){
         	System.out.println("Waiting for connection.");
@@ -17,5 +19,4 @@ public class Server {
         	t.start();
         }
     }
-
 }

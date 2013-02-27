@@ -85,7 +85,16 @@ public class FaceOperations {
 		return aImage.getBufferedImage();
 	}
 	public static ArrayList<IplImage> extractFaces(IplImage aImage, ArrayList<FaceFrame> aFaces){
+		ArrayList<IplImage> a = new ArrayList<IplImage>();
 		
-		return null;
+		for(FaceFrame f : aFaces){
+			cvSetImageROI(aImage, f.getCvRect());
+			IplImage temp = cvCreateImage(cvGetSize(aImage), aImage.depth(), aImage.nChannels());
+			cvCopy(aImage, temp, null);
+			cvResetImageROI(aImage);
+			temp = prepareImageForRecognition(temp);
+			a.add(temp);
+		}
+		return a;
 	}
 }

@@ -1,6 +1,8 @@
 package ie.markmein.development;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,6 +17,7 @@ import java.net.UnknownHostException;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -34,7 +37,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 
 	private PrintWriter printwriter;
 	private BufferedInputStream bufferedInputStream;
-	private OutputStream outputStream;
+	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
 	SendImageToServer sendImageToServer;
 	Intent i;
@@ -77,15 +80,17 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			Bundle extras = data.getExtras();
 			bmp = (Bitmap) extras.get("data");
 			iv.setImageBitmap(bmp);
+			bmp.compress(CompressFormat.JPEG, 100, outputStream);
 		}
 	}
+	
+	
 
 	public class SendImageToServer extends AsyncTask<String, Void, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
 			Log.e("Error", "In doInBackground 1" );
-			//tvStatus.setText(":"+ Environment.getExternalStorageDirectory().getPath().toString());
 
 			Socket sock;
 			try {
@@ -93,7 +98,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 				
 				Log.e("Error", "In doInBackground 2" );
 				
-				OutputStream os = sock.getOutputStream();
+				/*OutputStream os = sock.getOutputStream();
 				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
 				dOutStream.writeUTF("CCC");
 				dOutStream.writeInt(3);
@@ -104,43 +109,42 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 					b = (byte) r;
 				}
 				dOutStream.write(arr, 0, arr.length);
-				dOutStream.close();
-/*
+				dOutStream.close();*/
+
 				// sendfile
-				File myFile = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +"0.jpg"); 
-				Log.e("Error", "In doInBackground 3" + myFile.getAbsolutePath());
-				tvStatus.setText(""+myFile.length() + " :"+ Environment.getExternalStorageDirectory().getPath().toString());
-				Log.e("Error", "In doInBackground 4" );
-				byte [] mybytearray  = new byte [(int)myFile.length()];
-				Log.e("Error", "In doInBackground 5" + myFile.length() );
+				
+				//File myFile = new File (Environment.getExternalStorageDirectory()); 
+				//Log.e("Error", "In doInBackground 3" + myFile.getAbsolutePath());
+				ByteArrayInputStream b = new ByteArrayInputStream(outputStream.toByteArray());
+				byte [] mybytearray  = outputStream.toByteArray();
+				/*
+								Log.e("Error", "In doInBackground 5" + myFile.length() );
 				FileInputStream fis = new FileInputStream(myFile);
-				Log.e("Error", "In doInBackground 6" );
-				BufferedInputStream bis = new BufferedInputStream(fis);
-				Log.e("Error", "In doInBackground 7" );
+				BufferedInputStream bis = new BufferedInputStream();
+								Log.e("Error", "In doInBackground 7" );
 				bis.read(mybytearray,0,mybytearray.length);
-				Log.e("Error", "In doInBackground 8" );
+								Log.e("Error", "In doInBackground 8" );*/
 				OutputStream os = sock.getOutputStream();
-				Log.e("Error", "In doInBackground 9" );
 				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
-				Log.e("Error", "In doInBackground 10" );
-				tvStatus.setText("Sending...");
-				Log.e("Error", "In doInBackground 11" );
+				
+				
+								Log.e("Error", "In doInBackground 11" );
 				dOutStream.writeUTF("DDD");
-				Log.e("Error", "In doInBackground 12" );
-				dOutStream.writeInt((int) myFile.length());
-				Log.e("Error", "In doInBackground 13" );
+								Log.e("Error", "In doInBackground 12" );
+				dOutStream.writeInt(mybytearray.length);
+								Log.e("Error", "In doInBackground 13" );
 				dOutStream.write(mybytearray,0,mybytearray.length);
-				Log.e("Error", "In doInBackground 14" );
+								Log.e("Error", "In doInBackground 14" );
 				dOutStream.flush();
-				Log.e("Error", "In doInBackground 15" );
+								Log.e("Error", "In doInBackground 15" );
 				InputStream is = sock.getInputStream();
-				Log.e("Error", "In doInBackground 16" );
+								Log.e("Error", "In doInBackground 16" );
 				DataInputStream dis = new DataInputStream(is);
-				Log.e("Error", "In doInBackground 17" );
+								Log.e("Error", "In doInBackground 17" );
 				sock.shutdownOutput();
-				Log.e("Error", "In doInBackground 18" );
-				tvStatus.setText("Sent");
-*/
+								Log.e("Error", "In doInBackground 18" );
+				
+
 				//  String ret = dis.readUTF();
 				//  System.out.println(ret);
 				sock.close();

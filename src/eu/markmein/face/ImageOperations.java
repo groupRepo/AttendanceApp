@@ -1,6 +1,6 @@
-package ie.markmein.face;
+package eu.markmein.face;
 import static com.googlecode.javacv.cpp.opencv_core.*;
-import static com.googlecode.javacv.cpp.opencv_highgui.CV_LOAD_IMAGE_GRAYSCALE;
+import static com.googlecode.javacv.cpp.opencv_highgui.*;
 import static com.googlecode.javacv.cpp.opencv_imgproc.*;
 import static com.googlecode.javacv.cpp.opencv_objdetect.*;
 
@@ -14,13 +14,13 @@ import com.googlecode.javacv.cpp.opencv_core.CvSeq;
 import com.googlecode.javacv.cpp.opencv_core.IplImage;
 import com.googlecode.javacv.cpp.opencv_objdetect.CvHaarClassifierCascade;
 
-public class FaceOperations {
+public class ImageOperations {
 	/*
 	 * There is 4 different haar cascade files included in OpenCV, 
 	 * we can decide at later stage which one will give us best result.
 	 */
-	private final static String HAAR_CASCADE[] = {"cascade_files/haarcascade_frontalface_default.xml", "cascade_files/haarcascade_frontalface_alt.xml",
-			"cascade_files/haarcascade_frontalface_alt2.xml", "cascade_files/haarcascade_frontalface_alt_tree.xml"};
+	private final static String HAAR_CASCADE[] = {"prog/cascade_files/haarcascade_frontalface_default.xml", "prog/cascade_files/haarcascade_frontalface_alt.xml",
+			"prog/cascade_files/haarcascade_frontalface_alt2.xml", "prog/cascade_files/haarcascade_frontalface_alt_tree.xml"};
 	/**
 	 * Function takes in the image that is then searched to find the faces that it contains.
 	 * @param aImage - buffered image
@@ -48,7 +48,7 @@ public class FaceOperations {
 		CvMemStorage storage = CvMemStorage.create();
 		
 		//Detect the faces on the image using grey image and provided cascade file.
-		CvSeq faces = cvHaarDetectObjects(grayImg, cascade, storage, 1.2, 3, 0);
+		CvSeq faces = cvHaarDetectObjects(grayImg, cascade, storage, 1.1, 3, 0);
 
 		//Convert detected faces to FaceFrame objects.
 		for (int i = 0; i < faces.total(); i++) {
@@ -96,5 +96,11 @@ public class FaceOperations {
 			a.add(temp);
 		}
 		return a;
+	}
+	public static IplImage loadImageFromFile(String aPath){
+		return cvLoadImage(aPath);
+	}
+	public static void writeImageToFile(String aPath, IplImage aImage){
+		cvSaveImage(aPath, aImage);
 	}
 }

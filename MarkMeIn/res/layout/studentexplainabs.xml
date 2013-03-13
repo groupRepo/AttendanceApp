@@ -13,7 +13,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Spinner
-        android:id="@+id/spinner1"
+        android:id="@+id/spModule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="15dp" />
@@ -24,9 +24,9 @@
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/etReason"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="225dp"
             android:ems="10" >
 
             <requestFocus />
@@ -39,14 +39,14 @@
             android:weightSum="100" >
 
             <Button
-                android:id="@+id/btSubmitAbsence"
+                android:id="@+id/btStuSubmitAbsence"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
                 android:text="Submit" />
 
             <Button
-                android:id="@+id/btClearAbsence"
+                android:id="@+id/btStuClearAbsence"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="50"
@@ -64,7 +64,8 @@
             android:id="@+id/btMainMenu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Main Menu" />
+            android:text="Main Menu"
+            android:width="175dp" />
     </LinearLayout>
 
 </LinearLayout>

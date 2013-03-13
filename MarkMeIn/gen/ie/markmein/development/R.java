@@ -15,6 +15,7 @@ public final class R {
         public static final int logo=0x7f020001;
     }
     public static final class id {
+        public static final int btClearTweet=0x7f07002a;
         public static final int btGetRecords=0x7f070014;
         public static final int btLabRecords=0x7f070020;
         public static final int btLectureRecords=0x7f07001f;
@@ -22,27 +23,36 @@ public final class R {
         public static final int btMainMenu=0x7f07000c;
         public static final int btModuleRecords=0x7f07001e;
         public static final int btProcess=0x7f07001d;
-        public static final int btStuCheckAtt=0x7f070024;
-        public static final int btStuExpAbs=0x7f070025;
-        public static final int btStuFeedback=0x7f070026;
-        public static final int btStuViewNotes=0x7f070023;
+        public static final int btStuCheckAtt=0x7f07002e;
+        public static final int btStuClearAbsence=0x7f070026;
+        public static final int btStuExpAbs=0x7f07002f;
+        public static final int btStuFeedback=0x7f070030;
+        public static final int btStuSubmitAbsence=0x7f070025;
+        public static final int btStuViewNotes=0x7f07002d;
         public static final int btStudentRecords=0x7f070021;
+        public static final int btSubmitTweet=0x7f070029;
         public static final int btTakeAtt=0x7f07000d;
         public static final int btTakePic=0x7f07001c;
+        public static final int btTwitterLogin=0x7f070022;
         public static final int btViewAbs=0x7f07000f;
         public static final int btViewAtt=0x7f07000e;
         public static final int btViewFeedback=0x7f070010;
+        public static final int btnLoginTwitter=0x7f070027;
+        public static final int etReason=0x7f070024;
+        public static final int etTweetBox=0x7f070028;
         public static final int ivPic=0x7f07001a;
         public static final int login=0x7f070005;
         public static final int login_form=0x7f070002;
         public static final int login_status=0x7f070000;
         public static final int login_status_message=0x7f070001;
         public static final int loginid=0x7f070003;
-        public static final int menu_forgot_password=0x7f070027;
+        public static final int menu_forgot_password=0x7f070031;
         public static final int password=0x7f070004;
         public static final int scrollView1=0x7f070019;
         public static final int sign_in_button=0x7f070006;
+        public static final int spAtTag=0x7f07002b;
         public static final int spDept=0x7f070012;
+        public static final int spHashTag=0x7f07002c;
         public static final int spModule=0x7f070013;
         public static final int textView1=0x7f070008;
         public static final int textView2=0x7f070009;
@@ -54,7 +64,7 @@ public final class R {
         public static final int tvStudentCourse=0x7f070017;
         public static final int tvStudentID=0x7f070015;
         public static final int tvStudentName=0x7f070016;
-        public static final int tvTweets=0x7f070022;
+        public static final int tvTweets=0x7f070023;
     }
     public static final class layout {
         public static final int login=0x7f030000;
@@ -67,7 +77,11 @@ public final class R {
         public static final int staffviewabs=0x7f030007;
         public static final int staffviewatt=0x7f030008;
         public static final int staffviewfeedback=0x7f030009;
-        public static final int studnetmenu=0x7f03000a;
+        public static final int studentexplainabs=0x7f03000a;
+        public static final int studentpostfeedback=0x7f03000b;
+        public static final int studentviewatt=0x7f03000c;
+        public static final int studentviewnotes=0x7f03000d;
+        public static final int studnetmenu=0x7f03000e;
     }
     public static final class menu {
         public static final int activity_login=0x7f060000;

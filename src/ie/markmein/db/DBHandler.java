@@ -1,4 +1,4 @@
-package eu.markmein.db;
+package ie.markmein.db;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,18 +21,9 @@ public class DBHandler {
 	private static HttpClient mHttpClient;
 	private static final String URL = "http://80.93.22.88/phpDatabase/";
 	
-	/**
-	 * key: code //module offering code
-	 */
 	public static final String GET_MODULE_OFFERING_TRDATA = "module/getModuleOfferingTRDATA.php";
-	/**
-	 * key: code //module offering code
-	 */
 	public static final String GET_STUDENTS_OF_MODULE_OFFERING = "student/getStudetsOfModuleOffering.php";
-	/**
-	 * key: lecturerId //lecturer id
-	 */
-	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php"
+	
 	
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();

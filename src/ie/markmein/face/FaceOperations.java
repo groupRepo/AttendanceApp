@@ -48,7 +48,7 @@ public class FaceOperations {
 		CvMemStorage storage = CvMemStorage.create();
 		
 		//Detect the faces on the image using grey image and provided cascade file.
-		CvSeq faces = cvHaarDetectObjects(grayImg, cascade, storage, 1.2, 3, 0);
+		CvSeq faces = cvHaarDetectObjects(grayImg, cascade, storage, 1.1, 3, 0);
 
 		//Convert detected faces to FaceFrame objects.
 		for (int i = 0; i < faces.total(); i++) {

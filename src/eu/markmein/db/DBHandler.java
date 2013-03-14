@@ -32,8 +32,11 @@ public class DBHandler {
 	/**
 	 * key: lecturerId //lecturer id
 	 */
-	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php"
-	
+	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php";
+	/**
+	 * key: moduleOfferingID date time Type
+	 */
+	public static final String ADD_ATTENDANCE = "attendance/addAttandance.php";
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();
 	}

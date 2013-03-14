@@ -60,7 +60,6 @@ public class ConnectionHandler implements Runnable {
 			try {
 				
 				//all students
-				studentList = getStudentList(moduleOfferingId);
 				presentStudents = getPresentStudentList();
 				
 			//	ObjectOutputStream oos = new ObjectOutputStream(outStream);
@@ -145,18 +144,5 @@ public class ConnectionHandler implements Runnable {
 		a = recogniser.recogniseMany(faces);
 		System.out.println("Faces recognised: " + a.size());
 		return a;
-	}
-	private ArrayList<String> getStudentList(String aModOffCode) throws ClientProtocolException, IOException, JSONException{
-		ArrayList<String> a = new ArrayList<String>();
-		
-		JSONArray ja = database.executeQuery(DBHandler.GET_STUDENTS_OF_MODULE_OFFERING, DBHandler.prepareParams("code", aModOffCode));
-		if(ja.length() > 0){
-			for(int i = 0; i < ja.length(); i++){
-				JSONObject jo = ja.getJSONObject(i);
-				a.add(jo.getString("studentId"));
-			}
-		}
-		return a;
-	}
-	
+	}	
 }

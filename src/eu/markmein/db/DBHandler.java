@@ -34,9 +34,18 @@ public class DBHandler {
 	 */
 	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php";
 	/**
-	 * key: moduleOfferingID date time Type
+	 * key: moduleOfferingId date time Type
 	 */
 	public static final String ADD_ATTENDANCE = "attendance/addAttandance.php";
+	/**
+	 * key: attendanceId studentId
+	 */
+	public static final String ADD_STUDENT_ATTENDANCE = "attendance/addStudentAttandance.php";
+	/**
+	 * key moduleOfferingId date time
+	 */
+	public static final String GET_ATTENDANCE_ID = "attendance/getAttendanceId.php";
+	
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();
 	}

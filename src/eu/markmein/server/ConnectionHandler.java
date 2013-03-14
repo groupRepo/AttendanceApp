@@ -10,6 +10,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 //import java.io.ObjectOutputStream;
 //import java.io.OutputStream;
 import java.net.Socket;
@@ -29,20 +31,18 @@ import eu.markmein.face.ImageOperations;
 public class ConnectionHandler implements Runnable {
 	private final String TEMP_PICTURE_DIR = "./temp_pic/";
 	private String temp_picture_file;
-	
+
 	private static int tempFilenameGen = 0;
-	
+
 	private FaceRecogniser recogniser;
 	private DBHandler database = new DBHandler();
-	
+
 	private String moduleOfferingId;
-	private ArrayList<String> studentList = new ArrayList<String>();
-	
-	
+
 	private Socket socket;
 	private InputStream inStream;
-	//private OutputStream outStream;
-	
+	private OutputStream outStream;
+
 	public ConnectionHandler(Socket aSocket){
 		//get socket
 		socket = aSocket;
@@ -52,18 +52,24 @@ public class ConnectionHandler implements Runnable {
 	}
 
 	public void run(){
-		
+
 		//!!!
 		//boolean received
 		if(receiveData()){
 			ArrayList<String> presentStudents = null;
 			try {
-				
-				//all students
+
 				presentStudents = getPresentStudentList();
-				
-			//	ObjectOutputStream oos = new ObjectOutputStream(outStream);
-				
+
+				outStream = socket.getOutputStream();
+				ObjectOutputStream oos = new ObjectOutputStream(outStream);
+				System.out.println("before sending");
+				//for(String s: presentStudents){
+				//	oos.writeUTF(s);
+				//}
+				oos.writeObject(presentStudents);
+				System.out.println("sent");
+				socket.close();
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,28 +87,28 @@ public class ConnectionHandler implements Runnable {
 	}
 	private boolean receiveData(){
 		boolean a = false;
-		
+
 		int fileSize;
 		byte fileArray[];
-		
+
 		try {
 			int bytesRead, currentByte;
 
 			inStream = socket.getInputStream();
 			ObjectInputStream oInStream = new ObjectInputStream(inStream);
-		
+
 			// Receive filesize and module offering id
 			moduleOfferingId = oInStream.readUTF();
 			System.out.println("ModuleOfferingId: " + moduleOfferingId);
 			fileSize = oInStream.readInt();
 			System.out.println("File size: " + fileSize);
-			
+
 			fileArray = new byte[fileSize+10];
-			
+
 			// Receive the actual file
 			FileOutputStream fos = new FileOutputStream(temp_picture_file); // destination path and name of file
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			
+
 			currentByte = 0;
 			bytesRead = oInStream.read(fileArray, 0,fileArray.length);
 			currentByte = bytesRead;
@@ -114,13 +120,15 @@ public class ConnectionHandler implements Runnable {
 				}
 			}while(bytesRead > 0);
 			System.out.println("Total bytes read: " + currentByte);
+
 			
+			// Write file
 			bos.write(fileArray);
 			bos.flush();
 			bos.close();
-			
+
 			a = true;
-			oInStream.close();
+			//oInStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -129,20 +137,21 @@ public class ConnectionHandler implements Runnable {
 	private ArrayList<String> getPresentStudentList() throws ClientProtocolException, IOException, JSONException{
 		// Returned variable
 		ArrayList<String> a = new ArrayList<String>();
-		
+
 		// Other variables
 		JSONArray ja = database.executeQuery(DBHandler.GET_MODULE_OFFERING_TRDATA, DBHandler.prepareParams("code", moduleOfferingId));
 		JSONObject jo = ja.getJSONObject(0);
 		String trDataPath = jo.getString("trDataDir");
-		
+
 		// Set up recogniser and load in the model 
 		recogniser = new FaceRecogniser(trDataPath);
-		
+
 		//Extract separate faces
-	     ArrayList<IplImage> faces = ImageOperations.extractFaces(cvLoadImage(temp_picture_file), ImageOperations.getFacesCoords(cvLoadImage(temp_picture_file)));
+		ArrayList<IplImage> faces = ImageOperations.extractFaces(cvLoadImage(temp_picture_file), ImageOperations.getFacesCoords(cvLoadImage(temp_picture_file)));
+	
 		System.out.println("Faces detected: " + faces.size());
 		a = recogniser.recogniseMany(faces);
 		System.out.println("Faces recognised: " + a.size());
 		return a;
-	}	
+	}
 }

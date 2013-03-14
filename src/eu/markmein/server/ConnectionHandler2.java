@@ -3,8 +3,7 @@ package eu.markmein.server;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+
 import java.net.Socket;
 import java.sql.Date;
 import java.sql.Time;
@@ -24,8 +23,8 @@ public class ConnectionHandler2 implements Runnable {
 	private InputStream is;
 	private ObjectInputStream ois;
 	
-	private OutputStream os;
-	private ObjectOutputStream oos;
+	//private OutputStream os;
+	//private ObjectOutputStream oos;
 	
 	private String moduleOfferingId;
 	private ArrayList<String> studentIds;
@@ -42,33 +41,32 @@ public class ConnectionHandler2 implements Runnable {
 			time = new Time(System.currentTimeMillis()).toString();
 			
 			try {
-				ArrayList<String> keys = (ArrayList<String>) Arrays.asList(new String[]{"moduleOfferingID", "date", "time", "Type"});
-				ArrayList<String> values = (ArrayList<String>) Arrays.asList(new String[]{moduleOfferingId, date, time, type});
+				ArrayList<String> keys = new ArrayList<String>(Arrays.asList(new String[]{"moduleOfferingId", "date", "time", "Type"}));
+				ArrayList<String> values = new ArrayList<String>(Arrays.asList(new String[]{moduleOfferingId, date, time, type}));
 				database.executeQuery(DBHandler.ADD_ATTENDANCE, DBHandler.prepareParams(keys, values));
 				String attendanceId;
 				
-				keys = (ArrayList<String>) Arrays.asList(new String[]{"moduleOfferingID", "date", "time"});
-				values = (ArrayList<String>) Arrays.asList(new String[]{moduleOfferingId, date, time});
+				keys = new ArrayList<String>(Arrays.asList(new String[]{"moduleOfferingId", "date", "time"}));
+				values =new ArrayList<String>(Arrays.asList(new String[]{moduleOfferingId, date, time}));
 				JSONArray ja = database.executeQuery(DBHandler.GET_ATTENDANCE_ID, DBHandler.prepareParams(keys, values));
 				JSONObject jo = ja.getJSONObject(0);
 				attendanceId = jo.getString("id");
-				
+				System.out.println("Attendance id: " + attendanceId);
 				for(String id: studentIds){
-					keys = (ArrayList<String>) Arrays.asList(new String[]{"attendanceId", "studentId"});
-					values = (ArrayList<String>) Arrays.asList(new String[]{attendanceId, id});
+					keys = new ArrayList<String>(Arrays.asList(new String[]{"attendanceId", "studentId"}));
+					values = new ArrayList<String>(Arrays.asList(new String[]{attendanceId, id}));
+					System.out.println("Adding student: " + id + " to attendance: " + attendanceId);
 					database.executeQuery(DBHandler.ADD_STUDENT_ATTENDANCE, DBHandler.prepareParams(keys, values));
 				}
-				os = socket.getOutputStream();
-				oos = new ObjectOutputStream(os);
-				oos.writeBoolean(true);
+				//os = socket.getOutputStream();
+				//oos = new ObjectOutputStream(os);
+				//oos.writeBoolean(true);
 				socket.close();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -79,9 +77,11 @@ public class ConnectionHandler2 implements Runnable {
 			ois = new ObjectInputStream(is);
 			
 			type = ois.readUTF();
+			System.out.println("Type of class: " + type);
 			moduleOfferingId = ois.readUTF();
+			System.out.println("ModuleOfferingId: " + moduleOfferingId);
 			studentIds = (ArrayList<String>) ois.readObject();
-			
+			System.out.println("List Received: " + studentIds.toString());
 			socket.shutdownInput();
 			a = true;
 		} catch (IOException e) {

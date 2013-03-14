@@ -1,6 +1,6 @@
 package eu.markmein;
 
-import ie.markmein.development.R;
+import eu.markmein.R;
 import twitter4j.Twitter;
 import twitter4j.auth.RequestToken;
 import android.app.Activity;

@@ -5,16 +5,13 @@
     android:orientation="vertical"
     android:padding="25dp" >
 
-    <Spinner
-        android:id="@+id/spModule"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <ImageView
-        android:id="@+id/ivPic"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tvListOfAttendees"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1.11"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/ic_launcher"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -23,18 +20,18 @@
         android:weightSum="100" >
 
         <Button
-            android:id="@+id/btTakePic"
+            android:id="@+id/btConfirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:text="Take Picture" />
+            android:text="Confirm" />
 
         <Button
-            android:id="@+id/btProcess"
+            android:id="@+id/btRetake"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:text="Process" />
+            android:text="Retake" />
     </LinearLayout>
 
 </LinearLayout>

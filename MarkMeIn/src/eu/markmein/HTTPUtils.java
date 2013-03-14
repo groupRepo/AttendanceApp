@@ -32,30 +32,21 @@ public class HTTPUtils  {
 	}
 
 	public String executeHttpPost(String url, ArrayList<NameValuePair> params) throws Exception {
-		//Log.e("Error", "In executeHttpPost 1");
 		try {
-			//Log.e("Error", "In executeHttpPost 2");
 			HttpClient httpClient = getHttpClient();
-			//Log.e("Error", "In executeHttpPost 3");
 			HttpPost httpRequest = new HttpPost(url);
-			//Log.e("Error", "In executeHttpPost 4");
 			UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(params, "utf-8");
-			//Log.e("Error", "In executeHttpPost 5 "+ urlEncodedFormEntity.toString());
 			httpRequest.setEntity(urlEncodedFormEntity);
-			//Log.e("Error", "In executeHttpPost 6 " + httpRequest.getURI()+ " " +httpRequest.getParams().getParameter("uID"));
 			HttpResponse httpResponse = httpClient.execute(httpRequest);
-			//Log.e("Error", "In executeHttpPost 7");
 			in = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
 			StringBuffer stringBuffer = new StringBuffer("");
 			String line = "";
 			String NL = System.getProperty("line.separator");
-			//Log.e("Error", "In executeHttpPost 8");
 			while ((line = in.readLine()) != null) {
 				stringBuffer.append(line + NL);
 			}
 			in.close();
 			result = stringBuffer.toString();
-			//Log.e("Error", "In executeHttpPost 9");
 			return result;
 		} finally {
 			if (in != null) {
@@ -63,50 +54,37 @@ public class HTTPUtils  {
 					in.close();
 				} catch (IOException e) {
 					Log.e("log_tag", "Error converting result "+e.toString()); 
-					e.printStackTrace();
 				}
 			}
 		}
 	}
 
 	public String executeHttpGet(String url){
-		Log.e("Error", "In executeHttpGet 1");
 		try{
-			Log.e("Error", "In executeHttpPost 2");
 			HttpClient httpClient = new DefaultHttpClient();
-			Log.e("Error", "In executeHttpGet 3 " + httpClient.toString());
 			URI website = new URI(url);
-			Log.e("Error", "In executeHttpGet 4 " + website.toURL().toString());
 			HttpGet httpGet = new HttpGet();
-			Log.e("Error", "In executeHttpGet 5");
 			httpGet.setURI(website);
-			Log.e("Error", "In executeHttpGet 6");
 			HttpResponse httpResponse = httpClient.execute(httpGet);
-			Log.e("Error", "In executeHttpGet 7");
 			in = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
-			Log.e("Error", "In executeHttpGet 8");
 			StringBuffer stringBuffer = new StringBuffer("");
 			String line = "";
-			Log.e("Error", "In executeHttpGet 9");
 			String newLine = System.getProperty("line.separator");
-			Log.e("Error", "In executeHttpGet 10");
 			while((line = in.readLine()) != null){
 				stringBuffer.append(line + newLine);
 			}
-			Log.e("Error", "In executeHttpGet 11");
 			in.close();
 			result = stringBuffer.toString();
-			Log.e("Error", "In executeHttpGet 12");
 			return result;
 		}catch(Exception e){
-			Log.e("Error", "In executeHttpGet 13 " + e.toString());
+			Log.e("Error", "In executeHttpGet 1 " + e.toString());
 		}finally{
 			if(in != null){
 				try{
 					in.close();
 					return result;
 				}catch(Exception e){
-					Log.e("Error", "In executeHttpPost 14 " + e.toString());
+					Log.e("Error", "In executeHttpPost 2 " + e.toString());
 				}
 			}
 		}

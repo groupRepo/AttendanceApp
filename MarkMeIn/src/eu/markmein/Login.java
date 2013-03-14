@@ -1,31 +1,33 @@
 package eu.markmein;
 
-import ie.markmein.development.R;
-
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.preference.PreferenceManager;;
 
 public class Login extends Activity {
-	
-	//Testing a commit...
+
 	LogMeIn logMeIn;
-	HTTPUtils httpUtils;
-	Intent intent;
-	
-	public static final String url = "http://80.93.22.88/phpDatabase/validateLogin.php";
+	DBHandler db;
+	Intent i;
+
 	ArrayList<NameValuePair> postParameters;
 	// Values for id and password at the time of the login attempt.
 	private String mUserID;
@@ -33,7 +35,7 @@ public class Login extends Activity {
 	// UI references.
 	private EditText mUserIDView;
 	private EditText mPasswordView;
-	
+
 	View focusView = null;
 
 	@Override
@@ -41,8 +43,7 @@ public class Login extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
 		initialize();
-		// Set up the login form.
-	
+
 		findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -66,7 +67,7 @@ public class Login extends Activity {
 
 		// Store values at the time of the login attempt.
 		boolean cancel = false;
-		
+
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_field_required));
@@ -100,70 +101,57 @@ public class Login extends Activity {
 
 		@Override
 		protected String doInBackground(String... params) {
+			db = new DBHandler();
+			JSONArray ja = null;
 			postParameters = new ArrayList<NameValuePair>();
 			postParameters.add(new BasicNameValuePair("uID", mUserID)); 
 			postParameters.add(new BasicNameValuePair("uPWord", mPassword));
-			String strResponse = null;
+			try {
+				JSONObject jo = null;
+				ja = db.executeQuery(DBHandler.VALIDATE_LOGIN, postParameters);
+				jo = ja.getJSONObject(0);
+				String user = jo.getString("type");
 
-			try{
-				httpUtils = new HTTPUtils();
-				strResponse = httpUtils.executeHttpPost(url, postParameters);
-				String result = strResponse.toString();
-
-				if(result.contains("1")){
-					char student = 'R';
-					char staff = 'S';
-					if(staff == mUserID.charAt(0)){
-						intent = new Intent("ie.markmein.development.STAFFMENU");
-						startActivity(intent);
-					}else if(student == mUserID.charAt(0)){
-						intent = new Intent("ie.markmein.development.STUDENTMENU");
-						startActivity(intent);
-					}else{
-						intent = new Intent("ie.markmein.development.LOGIN");
-						startActivity(intent);
-					}
+				String student = "S";
+				String staff = "L";
+				if(staff.equals(user)){
+					//SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+					//SharedPreferences.Editor editor = settings.edit();
+					//editor.putString("id", mUserID);
+					i = new Intent("eu.markmein.STAFFMENU");
+					startActivity(i);
+				}else if(student.equals(user)){
+					i = new Intent("eu.markmein.STUDENTMENU");
+					startActivity(i);
+				}else{
+					i = new Intent("eu.markmein.LOGIN");
+					startActivity(i);
 				}
-				else{
-					showAlert();
-				}
-				/*JSONArray jArray = new JSONArray(result);
-				JSONObject jsonData= null;
-				try{
-					Log.e("Length", "Array Length: " + jArray.length());
-					for(int i = 0; i < jArray.length(); i++){
-						jsonData = jArray.getJSONObject(i);
-						Log.e("Returned", "SNo: " + jsonData.toString());
-
-						Log.e("Returned", "SNo: " + jsonData.getString("SNo") + " SPass: " + jsonData.getString("SPass") + " SName: " + jsonData.getString("SName"));
-					}
-					return jsonData.toString();
-				}catch(Exception e){
-					Log.e("Error", "In LogMeIn 7: " + e.toString());
-				}*/
-			}catch(Exception e){
-				Log.e("Error", "In LogMeIn 8: " + e.toString());
+			} catch (ClientProtocolException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} catch (JSONException e1) {
+				e1.printStackTrace();
 			}
 			return null;
 		}
-	}
-
-	public void showAlert(){
-		Login.this.runOnUiThread(new Runnable() {
-			public void run() {
-				AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-				builder.setTitle("Login Error.");
-				builder.setMessage("User not Found.") 
-				.setCancelable(false)
-				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						//intent = new Intent("ie.markmein.development.LOGIN");
-						//startActivity(intent);
-					}
-				});                    
-				AlertDialog alert = builder.create();
-				alert.show();              
-			}
-		});
+		
+		public void showAlert(final String title, final String message){
+			Login.this.runOnUiThread(new Runnable() {
+				public void run() {
+					AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+					builder.setTitle(title);
+					builder.setMessage(message) 
+					.setCancelable(false)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+						}
+					});                    
+					AlertDialog alert = builder.create();
+					alert.show();              
+				}
+			});
+		}
 	}
 }

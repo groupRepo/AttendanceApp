@@ -1,8 +1,10 @@
 package eu.markmein;
 
-import ie.markmein.development.R;
+import eu.markmein.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +14,8 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 	Button btTakePic, btViewAtt, btViewAbs, btViewFeed, btLogout;
 	final static int cameraData = 0;
 	Intent i;
+	String ID;
+	Lecturer lecturer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,8 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 	}
 	
 	private void initialize() {
+	//	ID = getIntent().getExtras().getString("ID");
+	//	lecturer.setLecturer(ID);
 		btTakePic = (Button) findViewById(R.id.btTakeAtt);
 		btTakePic.setOnClickListener(this);
 		btViewAtt = (Button) findViewById(R.id.btViewAtt);
@@ -37,23 +43,23 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btTakeAtt:
-			i = new Intent("ie.markmein.development.STAFFTAKEATT");
+			i = new Intent("eu.markmein.STAFFTAKEATT");
 			startActivity(i);
 			break;
 		case R.id.btViewAtt:
-			i = new Intent("ie.markmein.development.STAFFVIEWATT");
+			i = new Intent("eu.markmein.STAFFVIEWATT");
 			startActivity(i);
 			break;
 		case R.id.btViewAbs:
-			i = new Intent("ie.markmein.development.STAFFVIEWABS");
+			i = new Intent("eu.markmein.STAFFVIEWABS");
 			startActivity(i);
 			break;
 		case R.id.btViewFeedback:
-			i = new Intent("ie.markmein.development.STAFFVIEWFEEDBACK");
+			i = new Intent("eu.markmein.STAFFVIEWFEEDBACK");
 			startActivity(i);
 			break;
 		case R.id.btLogout:
-			i = new Intent("ie.markmein.development.LOGIN");
+			i = new Intent("eu.markmein.LOGIN");
 			startActivity(i);
 			break;
 		}

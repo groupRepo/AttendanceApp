@@ -1,6 +1,6 @@
 package eu.markmein;
 
-import ie.markmein.development.R;
+import eu.markmein.R;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

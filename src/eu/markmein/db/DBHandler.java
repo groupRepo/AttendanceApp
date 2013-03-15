@@ -36,11 +36,11 @@ public class DBHandler {
 	/**
 	 * key: moduleOfferingId date time Type
 	 */
-	public static final String ADD_ATTENDANCE = "attendance/addAttandance.php";
+	public static final String ADD_ATTENDANCE = "attendance/addAttendance.php";
 	/**
 	 * key: attendanceId studentId
 	 */
-	public static final String ADD_STUDENT_ATTENDANCE = "attendance/addStudentAttandance.php";
+	public static final String ADD_STUDENT_ATTENDANCE = "attendance/addStudentAttendance.php";
 	/**
 	 * key moduleOfferingId date time
 	 */
@@ -66,8 +66,13 @@ public class DBHandler {
 			sb.append(line + NL);
 		}
 		in.close();
+		JSONArray result = null;
+		try{
+			result = new JSONArray(sb.toString());
+		} catch(Exception e){
+			
+		}
 		
-		JSONArray result = new JSONArray(sb.toString());
 		return result;
 	}
 	public static ArrayList<NameValuePair> prepareParams(String aKey, String aValue){

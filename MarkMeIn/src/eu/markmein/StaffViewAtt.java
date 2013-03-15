@@ -34,7 +34,7 @@ public class StaffViewAtt extends Activity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btModuleRecords:
-			i = new Intent("eu.markmein.");
+			i = new Intent("eu.markmein.STAFFMODULERECORDS");
 			startActivity(i);
 			break;
 		case R.id.btLectureRecords:

@@ -9,6 +9,11 @@
         android:id="@+id/spModule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+    
+    <Spinner
+        android:id="@+id/spLabLect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <ImageView
         android:id="@+id/ivPic"
         android:layout_width="match_parent"

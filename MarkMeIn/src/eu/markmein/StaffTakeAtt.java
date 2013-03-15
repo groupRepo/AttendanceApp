@@ -10,6 +10,14 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import eu.markmein.StaffModuleRecords.GetLecturersModules;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,15 +37,19 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 	private Button btTakePic, btProcess;
 	private ImageView iv;
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-	private Spinner spModule;
+	private Spinner spModule, spLabLect;
+	DBHandler db;
 
 	SendImageToServer sendImageToServer;
 	Intent i;
 	
+	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> sample = new ArrayList<String>();
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
+	ArrayList<String> modulesIds = new ArrayList<String>();
 	
 	String moduleSelection = null;
+	GetLecturersModules getLectMods;
 	
 	final static int cameraData = 0;
 
@@ -46,10 +58,16 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.stafftakeatt);
 		initialize();
-		populateSpinner(spModule, sample);
+		getLectMods = new GetLecturersModules();
+		getLectMods.execute("text");
+		populateSpinner(spModule, forModuleSpinner);
+		populateSpinner(spLabLect, sample);
 	}
 
 	private void initialize() {
+		sample.add("Lecture");
+		sample.add("Laboratory");
+		
 		btTakePic = (Button) findViewById(R.id.btTakePic);
 		btTakePic.setOnClickListener(this);
 		btProcess = (Button) findViewById(R.id.btProcess);
@@ -57,9 +75,8 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 		iv = (ImageView) findViewById(R.id.ivPic);
 		spModule = (Spinner) findViewById(R.id.spModule);
 		spModule.setOnItemSelectedListener(this);
-		sample.add("Group Project");
-		sample.add("System Programming");
-		sample.add("Network Security");
+		spLabLect = (Spinner) findViewById(R.id.spLabLect);
+		spLabLect.setOnItemSelectedListener(this);
 	}
 
 	private void populateSpinner(Spinner spinnerIn, ArrayList<String> sampleIn) {
@@ -144,5 +161,34 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	class GetLecturersModules extends AsyncTask<String, Void, String>{
+
+		@Override
+		protected String doInBackground(String... params) {
+			db = new DBHandler();
+			JSONArray ja = null;
+			postParameters= DBHandler.prepareParams("lecturerId","S00012345");
+			Log.e("Error", "In doInBackground");
+			try {
+				JSONObject jo = null;
+				ja = db.executeQuery(DBHandler.GET_LECTURERES_CLASSES, postParameters);
+				Log.e("Error", ja.toString());
+				for(int i = 0; i< ja.length(); i ++){
+					jo = ja.getJSONObject(i);
+					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
+					modulesIds.add(jo.getString("code"));
+				}
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
 	}
 }

@@ -27,6 +27,7 @@ public class DBHandler {
 	public static final String GET_STUDENTS_OF_MODULE_OFFERING = "student/getStudetsOfModuleOffering.php";
 	public static final String VALIDATE_LOGIN = "validateLogin.php";
 	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php";
+	public static final String GET_MODULE_ATTENDANCE_RECORDS = "moduleAttendanceRecords.php";
 	
 	
 	public DBHandler() {

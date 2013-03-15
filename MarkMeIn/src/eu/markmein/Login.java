@@ -58,6 +58,7 @@ public class Login extends Activity {
 		mUserIDView = (EditText) findViewById(R.id.loginid);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mUserIDView.setText(mUserID);
+	
 	}
 
 	public void validateLogin() {

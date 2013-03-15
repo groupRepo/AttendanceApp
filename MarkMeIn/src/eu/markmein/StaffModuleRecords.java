@@ -27,8 +27,13 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
 	ArrayList<String> modulesIds = new ArrayList<String>();
+
 	DBHandler db;
 	GetLecturersModules getLectMods;
+	GetData getData;
+
+	int a,b,c,d,e,f,g, x,y,z;
+	String h,i;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 		setContentView(R.layout.staffmodulerecords);
 		initialize();
 		getLectMods = new GetLecturersModules();
+		getData = new GetData();
 		getLectMods.execute("text");
 		populateSpinner(spModule, forModuleSpinner);
 	}
@@ -57,9 +63,9 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btGetRecords:
-			int index = spModule.getSelectedItemPosition();
-			String code = modulesIds.get(index);
-			
+			//int index = spModule.getSelectedItemPosition();
+			//String code = modulesIds.get(index);
+			getData.execute("text");
 			break;
 		}
 	}
@@ -88,6 +94,56 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 				e.printStackTrace();
 			}
 			return null;
+		}
+	}
+
+	class GetData extends AsyncTask<String, Void, String>{
+
+		int a,b,c,d,e,f,g,x,y,z;
+		String h,i;
+		@Override
+		protected String doInBackground(String... params) {
+			Log.e("Error1", "In 2nd dib 1");
+			db = new DBHandler();
+			JSONArray ja = null;
+			postParameters = DBHandler.prepareParams("code", "CRN8081");
+			Log.e("Error2", "In 2nd dib 1");
+			try{
+				//JSONObject jo = null;
+				Log.e("Error3", "In 2nd dib 1");
+				ja = db.executeQuery(DBHandler.GET_MODULE_ATTENDANCE_RECORDS, postParameters);
+				Log.e("Error1", ja.toString());
+				//jo = ja.getJSONObject(0);
+				
+				a = ja.getJSONObject(0).getInt("overall");
+				b = ja.getJSONObject(1).getInt("lab");
+				c = ja.getJSONObject(2).getInt("lecture");
+				
+				h = ja.getJSONObject(3).getString("best");
+				i = ja.getJSONObject(4).getString("worst");
+
+			} catch (ClientProtocolException e) {
+				Log.e("Catch1", e.toString());
+			} catch (IOException e) {
+				Log.e("Catch2", e.toString());
+			} catch (JSONException e) {
+				Log.e("Catch3", e.toString());
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			
+			tvStaffModRecs.setText("");
+			tvStaffModRecs.append("\nLecture Attendance:\t\t\t" + a + "%\n\n");
+			tvStaffModRecs.append("Laboratory Attendance:\t" + b + "%\n\n");
+			tvStaffModRecs.append("Overall Attendance:\t\t\t" + c + "%\n\n");
+
+			tvStaffModRecs.append("\nStudent\n\n");
+			tvStaffModRecs.append("Best Attendance:\t\t" + h + "\n\n");
+			tvStaffModRecs.append("Worst Attendance:\t" + i + "\n\n");
 		}
 	}
 }

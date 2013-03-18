@@ -10,12 +10,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.animation.Animator;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -30,7 +33,7 @@ public class Login extends Activity {
 
 	ArrayList<NameValuePair> postParameters;
 	// Values for id and password at the time of the login attempt.
-	private String mUserID;
+	public static String mUserID;
 	private String mPassword;
 	// UI references.
 	private EditText mUserIDView;
@@ -58,7 +61,6 @@ public class Login extends Activity {
 		mUserIDView = (EditText) findViewById(R.id.loginid);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mUserIDView.setText(mUserID);
-	
 	}
 
 	public void validateLogin() {
@@ -116,9 +118,6 @@ public class Login extends Activity {
 				String student = "S";
 				String staff = "L";
 				if(staff.equals(user)){
-					//SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-					//SharedPreferences.Editor editor = settings.edit();
-					//editor.putString("id", mUserID);
 					i = new Intent("eu.markmein.STAFFMENU");
 					startActivity(i);
 				}else if(student.equals(user)){

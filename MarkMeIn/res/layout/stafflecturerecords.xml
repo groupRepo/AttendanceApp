@@ -4,6 +4,7 @@
     android:layout_height="fill_parent"
     android:gravity="top"
     android:orientation="vertical"
+    android:background="@drawable/bg"
     android:padding="25dp" >
 
     <TextView
@@ -13,7 +14,7 @@
         android:text="Best Attendance:" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvBestLectAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="Best Attended Lecture"
@@ -26,7 +27,7 @@
         android:text="Worst Attendance:" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvWorstLectAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="Worst Attended Lecture"

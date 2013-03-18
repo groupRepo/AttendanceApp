@@ -16,17 +16,15 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 	Intent i;
 	String ID;
 	Lecturer lecturer;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.staffmenu);
 		initialize();
 	}
-	
+
 	private void initialize() {
-	//	ID = getIntent().getExtras().getString("ID");
-	//	lecturer.setLecturer(ID);
 		btTakePic = (Button) findViewById(R.id.btTakeAtt);
 		btTakePic.setOnClickListener(this);
 		btViewAtt = (Button) findViewById(R.id.btViewAtt);
@@ -38,7 +36,7 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 		btLogout = (Button) findViewById(R.id.btLogout);
 		btLogout.setOnClickListener(this);
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){

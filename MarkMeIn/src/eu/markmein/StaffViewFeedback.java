@@ -36,8 +36,9 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 
 	AlertDialogManager alert = new AlertDialogManager();
 
-	Spinner spDept, spModule;
+	Spinner spModule;
 	Button btMainMenu;
+	Button btTwitterLogin;
 
 	Intent i;
 
@@ -75,8 +76,9 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 	private void initialize() {
 		btMainMenu = (Button) findViewById(R.id.btMainMenu);
 		btMainMenu.setOnClickListener(this);
+		btTwitterLogin = (Button) findViewById(R.id.btTwitterLogin);
+		btTwitterLogin.setOnClickListener(this);
 		tvtweets = (TextView) findViewById(R.id.tvTweets);
-		spDept = (Spinner) findViewById(R.id.spDept);
 		spModule = (Spinner) findViewById(R.id.spModule);
 	}
 
@@ -86,6 +88,8 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 		case R.id.btMainMenu:
 			i = new Intent("ie.markmein.development.STAFFMENU");
 			startActivity(i);
+			break;
+		case R.id.btTwitterLogin:
 			break;
 		}
 	}

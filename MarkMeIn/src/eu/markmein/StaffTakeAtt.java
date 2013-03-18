@@ -33,7 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-public class StaffTakeAtt extends Activity implements View.OnClickListener, OnItemSelectedListener {
+public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	private Button btTakePic, btProcess;
 	private ImageView iv;
 	private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -50,6 +50,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 	
 	String moduleSelection = null;
 	GetLecturersModules getLectMods;
+	String lecturerId;
 	
 	final static int cameraData = 0;
 
@@ -57,6 +58,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.stafftakeatt);
+		lecturerId = Login.mUserID;
 		initialize();
 		getLectMods = new GetLecturersModules();
 		getLectMods.execute("text");
@@ -74,13 +76,11 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 		btProcess.setOnClickListener(this);
 		iv = (ImageView) findViewById(R.id.ivPic);
 		spModule = (Spinner) findViewById(R.id.spModule);
-		spModule.setOnItemSelectedListener(this);
 		spLabLect = (Spinner) findViewById(R.id.spLabLect);
-		spLabLect.setOnItemSelectedListener(this);
 	}
 
 	private void populateSpinner(Spinner spinnerIn, ArrayList<String> sampleIn) {
-		sampleIn.add(0, "Nothing Selected");
+		sampleIn.add(0, "Select Item");
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sampleIn);
 		spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerIn.setAdapter(spinnerArrayAdapter);		
@@ -149,19 +149,6 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 			return null;
 		}
 	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
-			long arg3) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	class GetLecturersModules extends AsyncTask<String, Void, String>{
 
@@ -169,7 +156,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 		protected String doInBackground(String... params) {
 			db = new DBHandler();
 			JSONArray ja = null;
-			postParameters= DBHandler.prepareParams("lecturerId","S00012345");
+			postParameters= DBHandler.prepareParams("lecturerId",lecturerId);
 			Log.e("Error", "In doInBackground");
 			try {
 				JSONObject jo = null;
@@ -180,11 +167,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener, OnIt
 					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
 					modulesIds.add(jo.getString("code"));
 				}
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return null;

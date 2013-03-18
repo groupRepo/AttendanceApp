@@ -3,6 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="top"
+    android:background="@drawable/bg"
     android:orientation="vertical"
     android:padding="25dp" >
 
@@ -13,7 +14,7 @@
         android:text="Best Attendance:" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/tvBestLabAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="Best Attended Lab"
@@ -26,7 +27,7 @@
         android:text="Worst Attendance:" />
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/tvWorstLabAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:text="Worst Attended Lab"

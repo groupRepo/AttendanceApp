@@ -38,15 +38,15 @@ public class StaffViewAtt extends Activity implements View.OnClickListener {
 			startActivity(i);
 			break;
 		case R.id.btLectureRecords:
-			i = new Intent("eu.markmein.");
+			i = new Intent("eu.markmein.STAFFLECTURERECORDS");
 			startActivity(i);
 			break;
 		case R.id.btLabRecords:
-			i = new Intent("eu.markmein.");
+			i = new Intent("eu.markmein.STAFFLABRECORDS");
 			startActivity(i);
 			break;
 		case R.id.btStudentRecords:
-			i = new Intent("eu.markmein.");
+			i = new Intent("eu.markmein.STAFFSTUDENTRECORDS");
 			startActivity(i);
 			break;
 		}

@@ -2,11 +2,15 @@ package eu.markmein;
 
 import eu.markmein.R;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
+import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,18 +20,6 @@ import android.widget.TextView;
 
 public class StaffViewFeedback extends Activity implements View.OnClickListener {
 
-	static String TWITTER_CONSUMER_KEY = "409bNvYkmypjmHBpGQlkAQ";
-	static String TWITTER_CONSUMER_SECRET = "Pd1kJiXDklZ89JaaHOXycKT0DI27xIgvNj1EYizkiM";
-
-	static String PREFERENCE_NAME = "twitter_oauth";
-	static final String PREF_KEY_OAUTH_TOKEN = "oauth_token";
-	static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
-	static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
-	static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
-
-	static final String URL_TWITTER_AUTH = "auth_url";
-	static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-	static final String URL_TWITTER_OAUTH_TOKEN = "oauth_token";
 
 	private static Twitter twitter;
 	private static RequestToken requestToken;
@@ -59,15 +51,6 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			// stop executing code by return
 			return;
 		}
-
-		// Check if twitter keys are set
-		if (TWITTER_CONSUMER_KEY.trim().length() == 0 || TWITTER_CONSUMER_SECRET.trim().length() == 0) {
-			// Internet Connection is not present
-			alert.showAlertDialog(StaffViewFeedback.this,"Twitter oAuth tokens", "Please set your twitter oauth tokens first!", false);
-			// stop executing code by return
-			return;
-		}
-
 		initialize();
 
 		mSharedPreferences = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -80,6 +63,23 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 		btTwitterLogin.setOnClickListener(this);
 		tvtweets = (TextView) findViewById(R.id.tvTweets);
 		spModule = (Spinner) findViewById(R.id.spModule);
+
+		//Twitter
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setDebugEnabled(true)
+		.setOAuthConsumerKey("409bNvYkmypjmHBpGQlkAQ")
+		.setOAuthConsumerSecret("Pd1kJiXDklZ89JaaHOXycKT0DI27xIgvNj1EYizkiM");
+
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		twitter = tf.getInstance();
+
+		try {
+			requestToken = twitter
+					.getOAuthRequestToken("http://www.markmein.eu");
+			this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(requestToken.getAuthenticationURL())));
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override

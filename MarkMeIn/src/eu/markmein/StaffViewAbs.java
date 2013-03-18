@@ -6,8 +6,6 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import eu.markmein.StaffStudentRecords.GetStudents;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -28,6 +26,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forStudentSpinner = new ArrayList<String>();
 	ArrayList<String> studentIDs = new ArrayList<String>();
+
 
 	DBHandler db;
 	GetStudents getStudents;
@@ -108,17 +107,23 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 		protected String doInBackground(String... params) {
 			db = new DBHandler();
 			JSONArray ja = null;
-			postParameters= DBHandler.prepareParams("lecturerId", lecturerId);
-			postParameters= DBHandler.prepareParams("studentId", studentId);
+			ArrayList<String> keys = new ArrayList<String>();
+			keys.add("lecturerId");
+			keys.add("studentId");
+			
+			ArrayList<String> values = new ArrayList<String>();
+			values.add(lecturerId);
+			values.add(studentId);
+			
+			postParameters= DBHandler.prepareParams(keys, values);
 			try{
 				JSONObject jo = null;
-				ja = db.executeQuery(DBHandler.GET_STUDENT_ABSENCES, postParameters);
+				ja = db.executeQuery(DBHandler.GET_A_STUDENT_ABSENCES, postParameters);
 				for(int i = 0; i < ja.length(); i++){
 					jo = ja.getJSONObject(i);
-					/*
-					 * Do the parsing!
-					 */
-					excuses.add(lecturerId/* the parsesd data is to go here*/);
+					excuses.add(jo.getString("date") + " - " + jo.getString("time"));
+					excuses.add(jo.getString("code") + " - " + jo.getString("name"));
+					excuses.add(jo.getString("explaination"));
 				}
 			}catch(Exception e){
 				Log.e("dib0", e.toString());
@@ -130,8 +135,10 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			super.onPostExecute(result);
 			tvAbsences.setText("");
 			tvAbsences.append("\nAbsence Explanations for" + studentId + "\n\n");
-			for(int i = 0; i< excuses.size(); i++){
+			for(int i = 0; i< excuses.size(); i +=3){
 				tvAbsences.append(excuses.get(i) + "\n");
+				tvAbsences.append("\t" + excuses.get(i+1) + "\n");
+				tvAbsences.append("\t" + excuses.get(i+2) + "\n");
 			}
 		}
 	}

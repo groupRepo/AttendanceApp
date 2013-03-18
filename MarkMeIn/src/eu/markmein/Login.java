@@ -10,20 +10,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.animation.Animator;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.preference.PreferenceManager;;
 
 public class Login extends Activity {
 
@@ -61,6 +56,7 @@ public class Login extends Activity {
 		mUserIDView = (EditText) findViewById(R.id.loginid);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mUserIDView.setText(mUserID);
+	
 	}
 
 	public void validateLogin() {

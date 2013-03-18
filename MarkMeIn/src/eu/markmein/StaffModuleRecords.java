@@ -39,7 +39,6 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		lecturerId = Login.mUserID;
-		Log.e("Hope", lecturerId);
 		setContentView(R.layout.staffmodulerecords);
 		initialize();
 		getLectMods = new GetLecturersModules();
@@ -120,11 +119,11 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			super.onPostExecute(result);
 			tvStaffModRecs.setText("");
 			tvStaffModRecs.append("\nLecture Attendance:\t\t\t" + a + "%\n\n");
-			tvStaffModRecs.append("Laboratory Attendance:\t" + b + "%\n\n");
+			tvStaffModRecs.append("Laboratory Attendance:\t\t" + b + "%\n\n");
 			tvStaffModRecs.append("Overall Attendance:\t\t\t" + c + "%\n\n");
 			tvStaffModRecs.append("\nStudent\n\n");
 			tvStaffModRecs.append("Best Attendance:\t\t" + h + "\n\n");
-			tvStaffModRecs.append("Worst Attendance:\t" + i + "\n\n");
+			tvStaffModRecs.append("Worst Attendance:\t\t" + i + "\n\n");
 			
 		}
 	}

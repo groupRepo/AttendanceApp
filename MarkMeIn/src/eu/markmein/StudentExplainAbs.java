@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,18 +20,14 @@ import android.widget.Spinner;
 
 public class StudentExplainAbs extends Activity implements View.OnClickListener {
 	Spinner spMissedAttendance;
-	EditText etReason;
+	EditText etExplaination;
 	Button btSubmit, btClear, btMainMenu;
 
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forMissedAttendancesSpinner = new ArrayList<String>();
-	ArrayList<String> absenceIds = new ArrayList<String>();
+	ArrayList<Integer> absenceIds = new ArrayList<Integer>();
 
-	String code, studentId, date, explaination, attendanceId, time;
-	
-	//id name code date time
-	
-	//id studentId
+	String studentId, code, date, time, explaination, attendanceId;
 
 	GetMissedAttendance getMissedAttendance;
 	SubmitExplanation submitExplanation;
@@ -44,13 +39,13 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.studentexplainabs);
+		studentId = Login.mUserID;
 		initialize();
 	}
 
 	private void initialize() {
-		studentId = Login.mUserID;
 		spMissedAttendance = (Spinner) findViewById(R.id.spMissedAttendance);
-		etReason = (EditText) findViewById(R.id.etReason);
+		etExplaination = (EditText) findViewById(R.id.etReason);
 		btSubmit = (Button) findViewById(R.id.btStuSubmitAbsence);
 		btSubmit.setOnClickListener(this);
 		btClear = (Button) findViewById(R.id.btStuClearAbsence);
@@ -74,13 +69,13 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 		switch(v.getId()){
 		case R.id.btStuSubmitAbsence:
 			int index = spMissedAttendance.getSelectedItemPosition() - 1;
-			attendanceId = absenceIds.get(index);
-			explaination = etReason.getText().toString();
+			attendanceId = absenceIds.get(index).toString();
+			explaination = etExplaination.getText().toString();
 			submitExplanation = new SubmitExplanation();
 			submitExplanation.execute("text");
 			break;
 		case R.id.btStuClearAbsence:
-			etReason.setText("");
+			etExplaination.setText("");
 			break;
 		case R.id.btMainMenu:
 			i = new Intent("eu.markmein.STUDENTMENU");
@@ -90,21 +85,18 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 	}
 
 	class GetMissedAttendance extends AsyncTask<String, Void, String>{
-
 		@Override
 		protected String doInBackground(String... params) {
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("studentId", studentId);
-			Log.e("Error", "In doInBackground");
 			try {
 				JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_STUDENT_ABSENCES, postParameters);
-				Log.e("Error", ja.toString());
 				for(int i = 0; i< ja.length(); i ++){
 					jo = ja.getJSONObject(i);
 					forMissedAttendancesSpinner.add(jo.getString("date") + "-" + jo.getString("time") + "-" + jo.getString("name"));
-					absenceIds.add(jo.getString("id"));
+					absenceIds.add(jo.getInt("id"));
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -114,18 +106,21 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 	}
 
 	class SubmitExplanation extends AsyncTask<String, Void, String>{
-
+		JSONArray ja = null;
 		@Override
 		protected String doInBackground(String... params) {
 			db = new DBHandler();
-			JSONArray ja = null;
-			postParameters = DBHandler.prepareParams("studentId", studentId);
-			postParameters = DBHandler.prepareParams("attendanceId", attendanceId);
-			postParameters = DBHandler.prepareParams("explaination", explaination);
-			Log.e("Error", "In doInBackground");
+			ArrayList<String> keys = new ArrayList<String>();
+			keys.add("studentId");
+			keys.add("attendanceId");
+			keys.add("explaination");
+			ArrayList<String> values = new ArrayList<String>();
+			values.add(studentId);
+			values.add(attendanceId);
+			values.add(explaination);
+			postParameters = DBHandler.prepareParams(keys, values);
 			try {
 				ja = db.executeQuery(DBHandler.SUBMIT_EXPLANATION, postParameters);
-				Log.e("Error", ja.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -1,22 +1,16 @@
 package eu.markmein;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import eu.markmein.StaffModuleRecords.GetLecturersModules;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -26,8 +20,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -42,6 +34,8 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 
 	SendImageToServer sendImageToServer;
 	Intent i;
+	
+	String code;
 	
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> sample = new ArrayList<String>();
@@ -118,11 +112,14 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			try {
 				sock = new Socket("www.markmein.eu", 2221); 
 				
+				int index = spModule.getSelectedItemPosition() - 1;
+				code = modulesIds.get(index);
+				
 				byte [] mybytearray  = outputStream.toByteArray();
 				outputStream = new ByteArrayOutputStream();
 				OutputStream os = sock.getOutputStream();
 				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
-				dOutStream.writeUTF("CRN8081");
+				dOutStream.writeUTF(code);
 				dOutStream.writeInt(mybytearray.length);
 				dOutStream.write(mybytearray,0,mybytearray.length);
 				dOutStream.flush();
@@ -133,17 +130,14 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 				ObjectInputStream ois = new ObjectInputStream(is);
 				ArrayList<String> present = new ArrayList<String>();
 				present = (ArrayList<String>) ois.readObject();
+				present.add(0, code);
 				sock.close();
 
 				i = new Intent("eu.markmein.STAFFLISTATT");
 				i.putStringArrayListExtra("list", present);
 				startActivity(i);
 
-			} catch (UnknownHostException e) {
-				Log.e("Error", "In doInBackground Exception" + e.toString() );
-			} catch (IOException e) {
-				Log.e("Error", "In doInBackground Exception" + e.toString() );			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				Log.e("Error", "In doInBackground Exception" + e.toString() );
 			}
 			return null;
@@ -168,7 +162,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 					modulesIds.add(jo.getString("code"));
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Log.e("Error", "In doInBackground Exception" + e.toString() );
 			}
 			return null;
 		}

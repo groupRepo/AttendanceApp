@@ -1,6 +1,5 @@
 package eu.markmein;
 
-
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -37,15 +36,15 @@ public class StaffListAtt extends Activity implements View.OnClickListener {
 	}
 	
 	private void initialize() {
-		moduleOfferingId = "CRN8081";
 		type = "S";
-		
 		tvAttendees = (TextView) findViewById(R.id.tvListOfAttendees);
 		confirm = (Button) findViewById(R.id.btConfirm);
 		confirm.setOnClickListener(this);
 		retake = (Button) findViewById(R.id.btRetake);
 		retake.setOnClickListener(this);
 		list = getIntent().getExtras().getStringArrayList("list");
+		moduleOfferingId = list.get(0);
+		list.remove(0);
 		tvAttendees.setText("");
 		tvAttendees.append("No. of Attendees: " + list.size() + "\n\n");
 		for(int i = 0; i < list.size(); i++){
@@ -73,7 +72,6 @@ public class StaffListAtt extends Activity implements View.OnClickListener {
 			Socket sock;
 			try {
 				sock = new Socket("www.markmein.eu", 2222); 
-
 				OutputStream os = sock.getOutputStream();
 				ObjectOutputStream oos = new ObjectOutputStream(os);
 				oos.writeUTF(type);

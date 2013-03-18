@@ -28,15 +28,16 @@
             <TextView
                 android:id="@+id/tvAbsences"
                 android:layout_width="fill_parent"
-                android:layout_height="350dp"
+                android:layout_height="250dp"
                 android:text="List of Absences will populate here"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="horizontal"
         android:weightSum="100" >
 
@@ -44,7 +45,7 @@
             android:id="@+id/btGetAbsences"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center"
             android:layout_weight="50"
             android:text="Get Absences" />
 
@@ -52,8 +53,10 @@
             android:id="@+id/btMainMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:layout_weight="50"
             android:text="Main Menu" />
+
     </LinearLayout>
 
 </LinearLayout>

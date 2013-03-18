@@ -47,7 +47,8 @@ public class DBHandler {
 	
 	public static final String GET_STUDENT_CLASSES = "student/getStudentClasses.php";
 	public static final String GET_STUDENT_ABSENCES = "student/getStudentAbsences.php";
-	public static final String SUBMIT_EXPLANATION = "student/submitExplaination.php";
+	public static final String GET_A_STUDENT_ABSENCES = "student/getAStudentAbsences.php";
+	public static final String SUBMIT_EXPLANATION = "student/submitExplaiantion.php";
 
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();

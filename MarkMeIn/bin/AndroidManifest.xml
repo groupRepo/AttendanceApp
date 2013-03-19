@@ -152,7 +152,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StudentPostFeedback"
+            android:name="eu.markmein.StudentTwitter"
             android:exported="false"
             android:label="@string/app_name" >
             <intent-filter>
@@ -167,6 +167,16 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="eu.markmein.STUDENTEXPLAINABS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".StudentViewAtt"
+            android:exported="false"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="eu.markmein.STUDENTVIEWATT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

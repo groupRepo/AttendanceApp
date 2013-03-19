@@ -136,10 +136,13 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 			postParameters= DBHandler.prepareParams("studentId", studentId);
 			try{
 				JSONObject jo = null;
-				ja = db.executeQuery(DBHandler.GET_STUDENT_MODULES_ATTENDANCES, postParameters);
+				ja = db.executeQuery(DBHandler.GET_STUDENT_INFO1, postParameters);
 				for(int i = 0; i < ja.length(); i++){
 					jo = ja.getJSONObject(i);
-					stuModsAtt.add(jo.getInt("attendance" ) + "%\t- " +jo.getString("name"));
+					stuModsAtt.add(jo.getString("name"));
+					stuModsAtt.add("\t" + jo.getInt("attendance"));
+					stuModsAtt.add("\t" + jo.getInt("labAttendance"));
+					stuModsAtt.add("\t" + jo.getInt("lectureAttendance"));
 				}
 			}catch(Exception e){
 				Log.e("dib2", e.toString());
@@ -150,9 +153,12 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			tvDetails.setText("");
-			tvDetails.append("\n%\t\t - Module\n\n");
-			for(int i = 0; i< stuModsAtt.size(); i++){
-				tvDetails.append(stuModsAtt.get(i) + "\n");
+			tvDetails.append("\nAttendance Statistics\n\n");
+			for(int i = 0; i< stuModsAtt.size(); i+=4){
+				tvDetails.append("Module: " + stuModsAtt.get(i) + "\n");
+				tvDetails.append("Overall : " + stuModsAtt.get(i+1) + "%\n");
+				tvDetails.append("Lab Att : " + stuModsAtt.get(i+2) + "%\n");
+				tvDetails.append("Lect Att: " + stuModsAtt.get(i+3) + "%\n\n");
 			}
 		}
 	}

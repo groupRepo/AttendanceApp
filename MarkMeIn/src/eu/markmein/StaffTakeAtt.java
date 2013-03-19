@@ -1,6 +1,9 @@
 package eu.markmein;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -18,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -39,10 +43,9 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> sample = new ArrayList<String>();
+	
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
 	ArrayList<String> modulesIds = new ArrayList<String>();
-	
-	String moduleSelection = null;
 	GetLecturersModules getLectMods;
 	String lecturerId;
 	
@@ -114,15 +117,47 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 				int index = spModule.getSelectedItemPosition() - 1;
 				code = modulesIds.get(index);
 				
-				byte [] mybytearray  = outputStream.toByteArray();
+				//do something 
+				File f = null;
+				File[] a = null;
+				
+				String make = android.os.Build.MANUFACTURER;
+
+				if(make.startsWith("HTC")){
+					f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/100MEDIA" );
+				}
+				else if(make.startsWith("samsung")){
+					f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Camera");	
+				}
+				a = f.listFiles();
+				
+				String path = null;
+				long lastMod = Long.MIN_VALUE;
+				for(File ff : a){
+					if(ff.lastModified() > lastMod){
+						lastMod = ff.lastModified();
+						path = ff.getAbsolutePath();
+					}
+				}
+				
+				f = new File(path);
+				
+				byte [] mybytearray = new byte [(int) f.length()];
+				FileInputStream fis = new FileInputStream(f);
+                BufferedInputStream bis = new BufferedInputStream(fis);
+                bis.read(mybytearray,0,mybytearray.length);
+                
 				outputStream = new ByteArrayOutputStream();
 				OutputStream os = sock.getOutputStream();
 				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
+				//send code
 				dOutStream.writeUTF(code);
+				//send length of the file
 				dOutStream.writeInt(mybytearray.length);
+				//send file
 				dOutStream.write(mybytearray,0,mybytearray.length);
 				dOutStream.flush();
-				
+				bis.close();
 				sock.shutdownOutput();
 				
 				InputStream is = sock.getInputStream();

@@ -105,7 +105,6 @@ public class Login extends Activity {
 				toast.show();
 				showAlert("Error", "No network connectivity");
 			}*/
-
 		}
 	}
 
@@ -162,8 +161,5 @@ public class Login extends Activity {
 			}
 			return null;
 		}
-
-
 	}
-
 }

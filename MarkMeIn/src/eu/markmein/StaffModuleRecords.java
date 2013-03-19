@@ -21,19 +21,16 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	Spinner spModule;
 	TextView tvStaffModRecs;
 	Button btGetRecords;
-	
+
 	ArrayList<NameValuePair> postParameters;
-	//Takes the Module Codes and Module Names to be placed in Spinner
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
-	//Holds the Module Codes to be used when selecting statistics on a module
 	ArrayList<String> modulesIds = new ArrayList<String>();
-	
+
 	String code;
 	String lecturerId;
 
 	DBHandler db;
 	GetLecturersModules getLectMods;
-	GetData getData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,6 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 		setContentView(R.layout.staffmodulerecords);
 		initialize();
 		getLectMods = new GetLecturersModules();
-		getData = new GetData();
 		getLectMods.execute("text");
 		populateSpinner(spModule, forModuleSpinner);
 	}
@@ -65,6 +61,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btGetRecords:
+			GetData getData = new GetData();
 			int index = spModule.getSelectedItemPosition() - 1;
 			code = modulesIds.get(index);
 			getData.execute("text");
@@ -124,7 +121,6 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			tvStaffModRecs.append("\nStudent\n\n");
 			tvStaffModRecs.append("Best Attendance:\t\t" + h + "\n\n");
 			tvStaffModRecs.append("Worst Attendance:\t\t" + i + "\n\n");
-			
 		}
 	}
 }

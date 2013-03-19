@@ -25,9 +25,10 @@ public class Login extends Activity {
 	LogMeIn logMeIn;
 	DBHandler db;
 	Intent i;
+	ConnectionDetector cd;
+	AlertDialogManager adm;
 
 	ArrayList<NameValuePair> postParameters;
-	// Values for id and password at the time of the login attempt.
 	public static String mUserID;
 	private String mPassword;
 	// UI references.
@@ -56,7 +57,6 @@ public class Login extends Activity {
 		mUserIDView = (EditText) findViewById(R.id.loginid);
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mUserIDView.setText(mUserID);
-	
 	}
 
 	public void validateLogin() {
@@ -91,9 +91,39 @@ public class Login extends Activity {
 		if (cancel) {
 			focusView.requestFocus();
 		} else {
-			logMeIn = new LogMeIn();
-			logMeIn.execute("text");
+			/*cd = new ConnectionDetector(getApplicationContext());
+			adm = new AlertDialogManager();
+			boolean result = cd.isConnectingToInternet();
+			if(result = true){
+				showAlert("Error", "Network connectivity available");*/
+				logMeIn = new LogMeIn();
+				logMeIn.execute("text");
+			/*}else {
+				adm.showAlertDialog(getApplicationContext(), "Error", "There is no network connection", false);
+				Toast toast = Toast.makeText(getApplicationContext(), "There appears to be no network connectivity", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				showAlert("Error", "No network connectivity");
+			}*/
+
 		}
+	}
+
+	public void showAlert(final String title, final String message){
+		Login.this.runOnUiThread(new Runnable() {
+			public void run() {
+				AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
+				builder.setTitle(title);
+				builder.setMessage(message) 
+				.setCancelable(false)
+				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+					}
+				});                    
+				AlertDialog alert = builder.create();
+				alert.show();              
+			}
+		});
 	}
 
 	class LogMeIn extends AsyncTask<String, Void, String>{
@@ -132,22 +162,8 @@ public class Login extends Activity {
 			}
 			return null;
 		}
-		
-		public void showAlert(final String title, final String message){
-			Login.this.runOnUiThread(new Runnable() {
-				public void run() {
-					AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-					builder.setTitle(title);
-					builder.setMessage(message) 
-					.setCancelable(false)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-						}
-					});                    
-					AlertDialog alert = builder.create();
-					alert.show();              
-				}
-			});
-		}
+
+
 	}
+
 }

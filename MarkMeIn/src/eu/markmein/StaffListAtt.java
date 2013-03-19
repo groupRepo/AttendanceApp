@@ -58,6 +58,8 @@ public class StaffListAtt extends Activity implements View.OnClickListener {
 		case R.id.btConfirm:
 			slts = new SendListToServer();
 			slts.execute("text");
+			i = new Intent("eu.markmein.STAFFMENU");
+			startActivity(i);
 			break;
 		case R.id.btRetake:
 			i = new Intent("eu.markmein.STAFFTAKEATT");

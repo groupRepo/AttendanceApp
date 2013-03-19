@@ -1,7 +1,5 @@
 package eu.markmein;
 
-
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -25,7 +23,7 @@ public class StaffLabRecords extends Activity implements View.OnClickListener{
 	TextView tvBestLabAtt, tvWorstLabAtt;
 	DBHandler db;
 	ArrayList<NameValuePair> postParameters;
-	GetData getData;
+	
 	Intent i;
 	
 	String lecturerId;
@@ -35,7 +33,7 @@ public class StaffLabRecords extends Activity implements View.OnClickListener{
 		setContentView(R.layout.stafflabrecords);
 		lecturerId = Login.mUserID;
 		initialize();
-		getData = new GetData();
+		GetData getData = new GetData();
 		getData.execute("text");
 	}
 

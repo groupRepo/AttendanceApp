@@ -27,10 +27,8 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 	ArrayList<String> forStudentSpinner = new ArrayList<String>();
 	ArrayList<String> studentIDs = new ArrayList<String>();
 
-
 	DBHandler db;
 	GetStudents getStudents;
-	GetStudentAbsences getStudentAbsences;
 
 	String lecturerId;
 	String studentId;
@@ -70,7 +68,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 		case R.id.btGetAbsences:
 			int index = spStudents.getSelectedItemPosition() - 1;
 			studentId = studentIDs.get(index);
-			getStudentAbsences = new GetStudentAbsences();
+			GetStudentAbsences getStudentAbsences = new GetStudentAbsences();
 			getStudentAbsences.execute("text");
 			break;
 		case R.id.btMainMenu:

@@ -63,7 +63,6 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	private void initialize() {
 		sample.add("Lecture");
 		sample.add("Laboratory");
-		
 		btTakePic = (Button) findViewById(R.id.btTakePic);
 		btTakePic.setOnClickListener(this);
 		btProcess = (Button) findViewById(R.id.btProcess);

@@ -1,10 +1,7 @@
 package eu.markmein;
 
-import eu.markmein.R;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +12,6 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 	final static int cameraData = 0;
 	Intent i;
 	String ID;
-	Lecturer lecturer;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

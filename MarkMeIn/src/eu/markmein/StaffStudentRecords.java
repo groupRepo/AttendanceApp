@@ -31,9 +31,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 
 	DBHandler db;
 	GetStudents getStudents;
-	GetStudentInfo getStudentInfo;
-	GetData getData;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,8 +39,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 		setContentView(R.layout.staffstudentrecords);
 		initialize();
 		getStudents = new GetStudents();
-		getStudentInfo = new GetStudentInfo();
-		getData = new GetData();
+		
 		getStudents.execute("text");
 		populateSpinner(spStudents, forStudentSpinner);
 	}
@@ -68,11 +65,13 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btStuDetails:
+			GetData getData = new GetData();
+			GetStudentInfo getStudentInfo = new GetStudentInfo();
+			
 			int index = spStudents.getSelectedItemPosition() - 1;
 			studentId = studentIDs.get(index);
 			getStudentInfo.execute("text");
 			getData.execute("text");
-			//getData.cancel(isDestroyed());
 			break;
 		}
 

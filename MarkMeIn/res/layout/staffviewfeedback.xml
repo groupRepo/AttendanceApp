@@ -1,17 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
     android:orientation="vertical"
     android:padding="25dp" >
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical" >
-    </LinearLayout>
 
     <TextView
         android:id="@+id/textView2"
@@ -29,33 +22,43 @@
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="300dp" >
+        android:layout_height="0dip"
+        android:layout_weight="0.50" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="fill_parent" >
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tvTweets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="" />
+                android:text="Tweets Feed" />
         </LinearLayout>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <EditText
+        android:id="@+id/tweetText"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:ems="10"
+        android:inputType="text" >
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:weightSum="100" >
 
         <Button
-            android:id="@+id/btTwitterLogin"
-            android:layout_width="match_parent"
+            android:id="@+id/btPost"
+            android:layout_width="126dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_weight="50"
-            android:text="Login to Twitter" />
+            android:text="Post" />
 
         <Button
             android:id="@+id/btMainMenu"

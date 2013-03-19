@@ -23,7 +23,7 @@ public class StaffLectureRecords extends Activity implements View.OnClickListene
 	TextView tvBestLectAtt, tvWorstLectAtt;
 	DBHandler db;
 	ArrayList<NameValuePair> postParameters;
-	GetData getData;
+	
 	Intent i;
 
 	String lecturerId;
@@ -33,7 +33,7 @@ public class StaffLectureRecords extends Activity implements View.OnClickListene
 		setContentView(R.layout.stafflecturerecords);
 		lecturerId = Login.mUserID;
 		initialize();
-		getData = new GetData();
+		GetData getData = new GetData();
 		getData.execute("text");
 	}
 

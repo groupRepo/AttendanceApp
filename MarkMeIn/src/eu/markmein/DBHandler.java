@@ -16,13 +16,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.view.View;
-
-public class DBHandler {
+public class DBHandler{
 	
-	public View mLoginFormView;
-	public View mLoginStatusView;
-
 	private static HttpClient mHttpClient;
 	private static final String URL = "http://80.93.22.88/phpDatabase/";
 
@@ -30,22 +25,19 @@ public class DBHandler {
 	public static final String GET_MODULE_OFFERING_TRDATA = "module/getModuleOfferingTRDATA.php";
 	public static final String GET_STUDENTS_OF_MODULE_OFFERING = "student/getStudetsOfModuleOffering.php";
 	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php";
-	
 	public static final String GET_MODULE_ATTENDANCE_RECORDS = "module/moduleAttendanceRecords.php";
 	public static final String GET_BEST_WORST_LECTURE_RECORDS = "lecturer/getBestWorstAttendedLecture.php";
 	public static final String GET_BEST_WORST_LAB_RECORDS = "lecturer/getBestWorstAttendedLab.php";
-	
 	public static final String GET_STUDENTS_ID_NAME = "student/getAllStudentsIdName.php";
 	public static final String GET_STUDENT_INFO = "student/getStudentDetails.php";
 	public static final String GET_STUDENT_MODULES_ATTENDANCES = "student/getStudentModulesAttendance.php";
-	
 	public static final String GET_STUDENT_CLASSES = "student/getStudentClasses.php";
 	public static final String GET_STUDENT_ABSENCES = "student/getStudentAbsences.php";
 	public static final String GET_A_STUDENT_ABSENCES = "student/getAStudentAbsences.php";
 	public static final String SUBMIT_EXPLANATION = "student/submitExplaiantion.php";
-	
 	public static final String GET_NAME = "users/getName.php";
 	public static final String GET_STUDENT_INFO1 = "student/getStudentDetailedModulesAttendance.php";
+	public static final String GET_MODULE_NOTES = "student/getModuleNotes.php";
 
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();
@@ -69,12 +61,14 @@ public class DBHandler {
 		JSONArray result = new JSONArray(sb.toString());
 		return result;
 	}
+	
 	public static ArrayList<NameValuePair> prepareParams(String aKey, String aValue){
 		ArrayList<NameValuePair> p = new ArrayList<NameValuePair>();
 
 		p.add(new BasicNameValuePair(aKey, aValue));
 		return p;
 	}
+	
 	public static ArrayList<NameValuePair> prepareParams(ArrayList<String> aKey, ArrayList<String> aValue){
 		ArrayList<NameValuePair> p = new ArrayList<NameValuePair>();
 

@@ -3,7 +3,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:orientation="vertical" >
-    
+    android:gravity="top"
+    android:orientation="vertical"
+    android:padding="25dp" >
+
+    <Spinner
+        android:id="@+id/spModule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Spinner
+        android:id="@+id/spNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="100" >
+
+        <Button
+            android:id="@+id/btGetNotes"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="Get Notes" />
+        <Button
+            android:id="@+id/btDownload"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:text="Download" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -8,20 +8,24 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class StudentExplainAbs extends Activity implements View.OnClickListener {
 	Spinner spMissedAttendance;
 	EditText etExplaination;
-	Button btSubmit, btClear, btMainMenu;
+	Button btSubmit, btClear;
 
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forMissedAttendancesSpinner = new ArrayList<String>();
@@ -50,8 +54,6 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 		btSubmit.setOnClickListener(this);
 		btClear = (Button) findViewById(R.id.btStuClearAbsence);
 		btClear.setOnClickListener(this);
-		btMainMenu = (Button) findViewById(R.id.btMainMenu);
-		btMainMenu.setOnClickListener(this);
 		getMissedAttendance = new GetMissedAttendance();
 		getMissedAttendance.execute("text");
 		populateSpinner(spMissedAttendance, forMissedAttendancesSpinner);
@@ -68,20 +70,40 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btStuSubmitAbsence:
-			int index = spMissedAttendance.getSelectedItemPosition() - 1;
-			attendanceId = absenceIds.get(index).toString();
-			explaination = etExplaination.getText().toString();
-			submitExplanation = new SubmitExplanation();
-			submitExplanation.execute("text");
+			if((spMissedAttendance.getSelectedItemPosition() == 0)||(TextUtils.isEmpty(etExplaination.getText().toString()))){
+				
+				if (spMissedAttendance.getSelectedItemPosition() == 0) {
+					showToast("Select A Class You Were Absent For");
+				}
+				if (TextUtils.isEmpty(etExplaination.getText().toString())) {
+					etExplaination.setError(getString(R.string.error_field_required));
+				}
+			}else{
+				int index = spMissedAttendance.getSelectedItemPosition() - 1;
+				attendanceId = absenceIds.get(index).toString();
+				explaination = etExplaination.getText().toString();
+				submitExplanation = new SubmitExplanation();
+				submitExplanation.execute("text");
+				showAlert("Info", "Explanation Logged!\n Return To Main Menu?");
+			}
 			break;
 		case R.id.btStuClearAbsence:
 			etExplaination.setText("");
 			break;
-		case R.id.btMainMenu:
-			i = new Intent("eu.markmein.STUDENTMENU");
-			startActivity(i);
-			break;
 		}
+	}
+
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
+			}
+		});
 	}
 
 	class GetMissedAttendance extends AsyncTask<String, Void, String>{
@@ -124,19 +146,28 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			//showToast("Explanation Logged To Server");
+
+			etExplaination.setText("");
 			return null;
 		}
 	}
 
-	public void showAlert(){
+	public void showAlert(final String title, final String message){
 		StudentExplainAbs.this.runOnUiThread(new Runnable() {
 			public void run() {
 				AlertDialog.Builder builder = new AlertDialog.Builder(StudentExplainAbs.this);
-				builder.setTitle("Error.");
-				builder.setMessage("Fields must be selected.") 
+				builder.setTitle(title);
+				builder.setMessage(message) 
 				.setCancelable(false)
-				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
+						i = new Intent("eu.markmein.STUDENTMENU");
+						startActivity(i);
 					}
 				});                    
 				AlertDialog alert = builder.create();

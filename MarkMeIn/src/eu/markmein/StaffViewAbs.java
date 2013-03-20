@@ -7,15 +7,18 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StaffViewAbs  extends Activity implements View.OnClickListener {
 
@@ -66,16 +69,33 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btGetAbsences:
-			int index = spStudents.getSelectedItemPosition() - 1;
-			studentId = studentIDs.get(index);
-			GetStudentAbsences getStudentAbsences = new GetStudentAbsences();
-			getStudentAbsences.execute("text");
+			if(spStudents.getSelectedItemPosition() == 0){
+				showToast("Select A Student");
+			}else{
+				int index = spStudents.getSelectedItemPosition() - 1;
+				studentId = studentIDs.get(index);
+				GetStudentAbsences getStudentAbsences = new GetStudentAbsences();
+				getStudentAbsences.execute("text");
+			}
 			break;
 		case R.id.btMainMenu:
 			i = new Intent("eu.markmein.STAFFMENU");
 			startActivity(i);
 			break;
 		}
+	}
+	
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
+			}
+		});
 	}
 
 	public class GetStudents extends AsyncTask<String, Void, String>{
@@ -133,10 +153,10 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			super.onPostExecute(result);
 			tvAbsences.setText("");
 			tvAbsences.append("\nAbsence Explanations for" + studentId + "\n\n");
-			for(int i = 0; i< excuses.size(); i +=3){
-				tvAbsences.append(excuses.get(i) + "\n");
-				tvAbsences.append("\t" + excuses.get(i+1) + "\n");
-				tvAbsences.append("\t" + excuses.get(i+2) + "\n");
+			for(int i = 0; i < excuses.size(); i++){
+				tvAbsences.append(excuses.get(i) + "\n\n");
+				//tvAbsences.append("\t" + excuses.get(i+1) + "\n");
+				//tvAbsences.append("\t" + excuses.get(i+2) + "\n");
 			}
 		}
 	}

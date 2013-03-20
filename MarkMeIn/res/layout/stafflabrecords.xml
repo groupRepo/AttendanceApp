@@ -11,26 +11,26 @@
         android:id="@+id/textView1"
         android:layout_width="fill_parent"
         android:layout_height="25dp"
-        android:text="Best Attendance:" />
+        android:text="Best Attended Lab:" />
 
     <TextView
         android:id="@+id/tvBestLabAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:text="Best Attended Lab"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="fill_parent"
         android:layout_height="25dp"
-        android:text="Worst Attendance:" />
+        android:text="Worst Attended Lab:" />
 
     <TextView
         android:id="@+id/tvWorstLabAtt"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:text="Worst Attended Lab"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <LinearLayout

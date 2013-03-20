@@ -14,7 +14,7 @@ public class StudentMenu extends Activity implements View.OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.studnetmenu);
+		setContentView(R.layout.studentmenu);
 		initialize();
 	}
 

@@ -14,18 +14,24 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StaffViewFeedback extends Activity implements View.OnClickListener {
 
@@ -105,26 +111,50 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btGetTweets:
-			int index = spModule.getSelectedItemPosition() -1;
-			moduleOfferingCode = modulesIds.get(index);
-			tvTweets.setText("");
-			GetTweets getTweets;
-			getTweets = new GetTweets();
-			getTweets.execute("text");
+			if(spModule.getSelectedItemPosition() == 0 ){
+				showToast("Select A Module");
+			}else{
+				int index = spModule.getSelectedItemPosition() -1;
+				moduleOfferingCode = modulesIds.get(index);
+				//tvTweets.setText("Select A Module");
+				GetTweets getTweets;
+				getTweets = new GetTweets();
+				getTweets.execute("text");
+			}
 			break;
 		case R.id.btMainMenu:
 			i = new Intent("eu.markmein.STAFFMENU");
 			startActivity(i);
 			break;
 		case R.id.btPost:
-			int indexA = spModule.getSelectedItemPosition() -1;
-			moduleOfferingCode = modulesIds.get(indexA);
-			PostTweet postTweet = new PostTweet();
-			//if(tweetText.isDirty()){
-			postTweet.execute("String");
-			//}
+			if((spModule.getSelectedItemPosition() == 0)||(TextUtils.isEmpty(etTweetText.getText().toString()))){
+				if(spModule.getSelectedItemPosition() == 0){
+					showToast("Select A Module");
+				}
+				if(TextUtils.isEmpty(etTweetText.getText().toString())){
+					etTweetText.setError(getString(R.string.error_field_required));
+				}
+			}else{
+				int indexA = spModule.getSelectedItemPosition() -1;
+				moduleOfferingCode = modulesIds.get(indexA);
+				PostTweet postTweet = new PostTweet();
+				postTweet.execute("String");
+			}
 			break;
 		}
+	}
+	
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
+			}
+		});
 	}
 
 	public class GetTweets extends AsyncTask<String, Void, String>{
@@ -153,7 +183,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 					}
 				}
 			}
-
+			tvTweets.setText("");
 			for(int i = 0; i < tweets.size(); i++){
 				tvTweets.append(tweets.get(i) + "\n");
 			}
@@ -202,6 +232,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 		protected String doInBackground(String... params) {
 			try {
 				twitter.updateStatus("#" + moduleOfferingCode + " " + fullName + ": " + etTweetText.getText().toString());
+				showAlert("Info", "Tweet Sent!\n Return To Main Menu?");
 			} catch (TwitterException e) {
 
 			}
@@ -213,5 +244,28 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			super.onPostExecute(result);
 			etTweetText.setText("");
 		}
+	}
+	
+	public void showAlert(final String title, final String message){
+		StaffViewFeedback.this.runOnUiThread(new Runnable() {
+			public void run() {
+				AlertDialog.Builder builder = new AlertDialog.Builder(StaffViewFeedback.this);
+				builder.setTitle(title);
+				builder.setMessage(message) 
+				.setCancelable(false)
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+					}
+				})
+				.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						i = new Intent("eu.markmein.STAFFMENU");
+						startActivity(i);
+					}
+				});                    
+				AlertDialog alert = builder.create();
+				alert.show();              
+			}
+		});
 	}
 }

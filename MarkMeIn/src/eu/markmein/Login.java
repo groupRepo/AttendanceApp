@@ -1,33 +1,29 @@
 package eu.markmein;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class Login extends Activity {
 
-	LogMeIn logMeIn;
+	LogIn logIn;
 	DBHandler db;
 	Intent i;
-	ConnectionDetector cd;
-	AlertDialogManager adm;
-
+	
 	ArrayList<NameValuePair> postParameters;
 	public static String mUserID;
 	private String mPassword;
@@ -91,41 +87,25 @@ public class Login extends Activity {
 		if (cancel) {
 			focusView.requestFocus();
 		} else {
-			/*cd = new ConnectionDetector(getApplicationContext());
-			adm = new AlertDialogManager();
-			boolean result = cd.isConnectingToInternet();
-			if(result = true){
-				showAlert("Error", "Network connectivity available");*/
-				logMeIn = new LogMeIn();
-				logMeIn.execute("text");
-			/*}else {
-				adm.showAlertDialog(getApplicationContext(), "Error", "There is no network connection", false);
-				Toast toast = Toast.makeText(getApplicationContext(), "There appears to be no network connectivity", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
-				showAlert("Error", "No network connectivity");
-			}*/
+			logIn = new LogIn();
+			logIn.execute("text");
 		}
 	}
 
-	public void showAlert(final String title, final String message){
-		Login.this.runOnUiThread(new Runnable() {
-			public void run() {
-				AlertDialog.Builder builder = new AlertDialog.Builder(Login.this);
-				builder.setTitle(title);
-				builder.setMessage(message) 
-				.setCancelable(false)
-				.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-					}
-				});                    
-				AlertDialog alert = builder.create();
-				alert.show();              
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
 			}
 		});
 	}
 
-	class LogMeIn extends AsyncTask<String, Void, String>{
+	class LogIn extends AsyncTask<String, Void, String>{
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -144,21 +124,20 @@ public class Login extends Activity {
 				String staff = "L";
 				if(staff.equals(user)){
 					i = new Intent("eu.markmein.STAFFMENU");
+					showToast("Login Successfull");
 					startActivity(i);
 				}else if(student.equals(user)){
 					i = new Intent("eu.markmein.STUDENTMENU");
+					showToast("Login Successfull");
 					startActivity(i);
 				}else{
 					i = new Intent("eu.markmein.LOGIN");
+					showToast("Login Unsuccessfull");
 					startActivity(i);
 				}
-			} catch (ClientProtocolException e1) {
+			} catch (Exception e1) {
 				e1.printStackTrace();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			} catch (JSONException e1) {
-				e1.printStackTrace();
-			}
+			} 
 			return null;
 		}
 	}

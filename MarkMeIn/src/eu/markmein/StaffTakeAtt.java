@@ -15,19 +15,24 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	private Button btTakePic, btProcess;
@@ -38,17 +43,17 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 
 	SendImageToServer sendImageToServer;
 	Intent i;
-	
+
 	String code;
-	
+
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> sample = new ArrayList<String>();
-	
+
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
 	ArrayList<String> modulesIds = new ArrayList<String>();
 	GetLecturersModules getLectMods;
 	String lecturerId;
-	
+	View focusView = null;
 	final static int cameraData = 0;
 
 	@Override
@@ -59,8 +64,8 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 		initialize();
 		getLectMods = new GetLecturersModules();
 		getLectMods.execute("text");
-		populateSpinner(spModule, forModuleSpinner);
-		populateSpinner(spLabLect, sample);
+		populateSpinner("Select a Module", spModule, forModuleSpinner);
+		populateSpinner("Select a Module", spLabLect, sample);
 	}
 
 	private void initialize() {
@@ -75,23 +80,44 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 		spLabLect = (Spinner) findViewById(R.id.spLabLect);
 	}
 
-	private void populateSpinner(Spinner spinnerIn, ArrayList<String> sampleIn) {
-		sampleIn.add(0, "Select Item");
+	private void populateSpinner(String firstItem, Spinner spinnerIn, ArrayList<String> sampleIn) {
+		sampleIn.add(0, firstItem);
 		ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, sampleIn);
 		spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinnerIn.setAdapter(spinnerArrayAdapter);		
 	}
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
+			}
+		});
+	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btTakePic:
-			i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(i, cameraData);
+			if((spModule.getSelectedItemPosition() == 0) || (spLabLect.getSelectedItemPosition() == 0) ){
+				showToast("Ensure Module And Class Type Are Selected");
+			}else{
+				i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+				startActivityForResult(i, cameraData);
+			}
 			break;
 		case R.id.btProcess:
-			sendImageToServer = new SendImageToServer();
-			sendImageToServer.execute("text");
+			//if(!iv.isDirty()){
+			//	showToast("Take Class Picture First");
+			//}else{
+				sendImageToServer = new SendImageToServer();
+				sendImageToServer.execute("text");
+			//}
 		}		
 	}
 
@@ -113,14 +139,14 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			Socket sock;
 			try {
 				sock = new Socket("www.markmein.eu", 2221); 
-				
+
 				int index = spModule.getSelectedItemPosition() - 1;
 				code = modulesIds.get(index);
-				
+
 				//do something 
 				File f = null;
 				File[] a = null;
-				
+
 				String make = android.os.Build.MANUFACTURER;
 
 				if(make.startsWith("HTC")){
@@ -130,7 +156,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 					f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/Camera");	
 				}
 				a = f.listFiles();
-				
+
 				String path = null;
 				long lastMod = Long.MIN_VALUE;
 				for(File ff : a){
@@ -139,14 +165,14 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 						path = ff.getAbsolutePath();
 					}
 				}
-				
+
 				f = new File(path);
-				
+
 				byte [] mybytearray = new byte [(int) f.length()];
 				FileInputStream fis = new FileInputStream(f);
-                BufferedInputStream bis = new BufferedInputStream(fis);
-                bis.read(mybytearray,0,mybytearray.length);
-                
+				BufferedInputStream bis = new BufferedInputStream(fis);
+				bis.read(mybytearray,0,mybytearray.length);
+
 				outputStream = new ByteArrayOutputStream();
 				OutputStream os = sock.getOutputStream();
 				ObjectOutputStream dOutStream = new ObjectOutputStream(os);
@@ -159,7 +185,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 				dOutStream.flush();
 				bis.close();
 				sock.shutdownOutput();
-				
+
 				InputStream is = sock.getInputStream();
 				ObjectInputStream ois = new ObjectInputStream(is);
 				ArrayList<String> present = new ArrayList<String>();
@@ -177,7 +203,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			return null;
 		}
 	}
-	
+
 	class GetLecturersModules extends AsyncTask<String, Void, String>{
 
 		@Override
@@ -200,6 +226,5 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			}
 			return null;
 		}
-
 	}
 }

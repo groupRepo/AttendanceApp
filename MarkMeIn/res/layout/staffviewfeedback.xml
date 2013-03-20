@@ -54,7 +54,6 @@
                 android:id="@+id/tvTweets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tweets Feed"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </LinearLayout>
     </ScrollView>
@@ -80,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="50"
-            android:text="Post" />
+            android:text="Post Tweet" />
 
         <Button
             android:id="@+id/btMainMenu"

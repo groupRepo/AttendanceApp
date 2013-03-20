@@ -4,17 +4,21 @@ import java.util.ArrayList;
 
 import org.apache.http.NameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StaffModuleRecords extends Activity implements View.OnClickListener{
 
@@ -61,14 +65,31 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btGetRecords:
-			GetData getData = new GetData();
-			int index = spModule.getSelectedItemPosition() - 1;
-			code = modulesIds.get(index);
-			getData.execute("text");
+			if(spModule.getSelectedItemPosition() == 0){
+				showToast("Select A Module");
+			}else{
+				GetData getData = new GetData();
+				int index = spModule.getSelectedItemPosition() - 1;
+				code = modulesIds.get(index);
+				getData.execute("text");
+			}
 			break;
 		}
 	}
 
+	public void showToast( final CharSequence text){
+		runOnUiThread(new Runnable() {
+			public void run()
+			{
+				Context context = getApplicationContext();
+				int duration = Toast.LENGTH_LONG;
+				Toast toast = Toast.makeText(context, text, duration);
+				toast.setGravity(Gravity.TOP, 0, 75);
+				toast.show();
+			}
+		});
+	}
+	
 	class GetLecturersModules extends AsyncTask<String, Void, String>{
 		@Override
 		protected String doInBackground(String... params) {
@@ -98,15 +119,36 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters = DBHandler.prepareParams("code", code);
-			try{
+			
+			try {
 				ja = db.executeQuery(DBHandler.GET_MODULE_ATTENDANCE_RECORDS, postParameters);
-				a = ja.getJSONObject(0).getInt("overall");
-				b = ja.getJSONObject(1).getInt("lab");
-				c = ja.getJSONObject(2).getInt("lecture");
-				h = ja.getJSONObject(3).getString("best");
-				i = ja.getJSONObject(4).getString("worst");
-			}catch(Exception e){
-				Log.e("dib", e.toString());
+				try {
+					a = ja.getJSONObject(2).getInt("lecture");
+				} catch (JSONException e) {
+					a = 0;
+				}
+				try {
+					b = ja.getJSONObject(1).getInt("lab");
+				} catch (JSONException e) {
+					b = 0;
+				}
+				try {
+					c = ja.getJSONObject(0).getInt("overall");
+				} catch (JSONException e) {
+					c = 0;
+				}
+				try {
+					h = ja.getJSONObject(3).getString("best");
+				} catch (JSONException e) {
+					h = "null";
+				}
+				try {
+					i = ja.getJSONObject(4).getString("worst");
+				} catch (JSONException e) {
+					i = "null";
+				}
+			} catch (Exception e){
+				
 			}
 			return null;
 		}

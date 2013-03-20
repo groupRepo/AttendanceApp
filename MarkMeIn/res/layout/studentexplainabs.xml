@@ -55,13 +55,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical" >
-
-        <Button
-            android:id="@+id/btMainMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Main Menu"
-            android:width="175dp" />
     </LinearLayout>
 
 </LinearLayout>

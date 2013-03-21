@@ -1,4 +1,4 @@
-package ie.markmein.face;
+package eu.markmein.face;
 
 import com.googlecode.javacv.cpp.opencv_core.CvRect;
 

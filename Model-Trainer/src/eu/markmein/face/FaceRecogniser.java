@@ -133,7 +133,7 @@ public class FaceRecogniser {
 				String tempName = null;
 				tempName = recognise(f);
 				// TODO to be tested !!!!! May need to be changed
-				if(tempName != null && !rNames.contains(tempName)){
+				if(tempName != null/* && !rNames.contains(tempName)*/){
 					rNames.add(tempName);
 				}
 			}

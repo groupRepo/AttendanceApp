@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,6 +46,10 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	Intent i;
 
 	String code;
+	
+	boolean hasPicBeenTaken = false;
+
+	ProgressDialog dialog;
 
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> sample = new ArrayList<String>();
@@ -59,13 +64,14 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffTakeAtt.this, "", "Loading...", true);
 		setContentView(R.layout.stafftakeatt);
 		lecturerId = Login.mUserID;
 		initialize();
 		getLectMods = new GetLecturersModules();
 		getLectMods.execute("text");
 		populateSpinner("Select a Module", spModule, forModuleSpinner);
-		populateSpinner("Select a Module", spLabLect, sample);
+		populateSpinner("Select a Classtype", spLabLect, sample);
 	}
 
 	private void initialize() {
@@ -107,17 +113,21 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			if((spModule.getSelectedItemPosition() == 0) || (spLabLect.getSelectedItemPosition() == 0) ){
 				showToast("Ensure Module And Class Type Are Selected");
 			}else{
+				hasPicBeenTaken = true;
 				i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 				startActivityForResult(i, cameraData);
 			}
 			break;
 		case R.id.btProcess:
-			//if(!iv.isDirty()){
-			//	showToast("Take Class Picture First");
-			//}else{
+			if(hasPicBeenTaken == true){
+				dialog = ProgressDialog.show(StaffTakeAtt.this, "Info", "Processing Image", true);
 				sendImageToServer = new SendImageToServer();
 				sendImageToServer.execute("text");
-			//}
+			}
+			else{
+				showToast("Capture Class Attendance First!!");
+			}
+			
 		}		
 	}
 
@@ -200,6 +210,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			} catch (Exception e) {
 				Log.e("Error", "In doInBackground Exception" + e.toString() );
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -211,11 +222,9 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("lecturerId",lecturerId);
-			Log.e("Error", "In doInBackground");
 			try {
 				JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_LECTURERES_CLASSES, postParameters);
-				Log.e("Error", ja.toString());
 				for(int i = 0; i< ja.length(); i ++){
 					jo = ja.getJSONObject(i);
 					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
@@ -224,6 +233,7 @@ public class StaffTakeAtt extends Activity implements View.OnClickListener {
 			} catch (Exception e) {
 				Log.e("Error", "In doInBackground Exception" + e.toString() );
 			}
+			dialog.cancel();
 			return null;
 		}
 	}

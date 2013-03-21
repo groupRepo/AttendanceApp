@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -33,6 +34,8 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 	DBHandler db;
 	GetStudents getStudents;
 
+	ProgressDialog dialog;
+	
 	String lecturerId;
 	String studentId;
 
@@ -41,6 +44,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffViewAbs.this, "", "Loading...", true);
 		setContentView(R.layout.staffviewabs);
 		lecturerId = Login.mUserID;
 		initialize();
@@ -72,6 +76,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			if(spStudents.getSelectedItemPosition() == 0){
 				showToast("Select A Student");
 			}else{
+				dialog = ProgressDialog.show(StaffViewAbs.this, "", "Retrieving Information", true);
 				int index = spStudents.getSelectedItemPosition() - 1;
 				studentId = studentIDs.get(index);
 				GetStudentAbsences getStudentAbsences = new GetStudentAbsences();
@@ -115,6 +120,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			}catch(Exception e){
 				Log.e("dib0", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -146,6 +152,7 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			}catch(Exception e){
 				Log.e("dib0", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 		@Override

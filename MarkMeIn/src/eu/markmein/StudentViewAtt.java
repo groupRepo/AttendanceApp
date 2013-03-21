@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,9 @@ public class StudentViewAtt extends Activity{
 	String studentId;
 	DBHandler db;
 	
+	ProgressDialog dialog;
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -30,6 +34,7 @@ public class StudentViewAtt extends Activity{
 	}
 
 	private void initialize() {
+		dialog = ProgressDialog.show(StudentViewAtt.this, "", "loading", true);
 		tvStudentID = (TextView) findViewById(R.id.tvStudentID);
 		tvStudentName = (TextView) findViewById(R.id.tvStudentName);
 		tvStudentCourse = (TextView) findViewById(R.id.tvStudentCourse);
@@ -38,6 +43,7 @@ public class StudentViewAtt extends Activity{
 		GetData getData = new GetData();
 		getStudentInfo.execute("text");
 		getData.execute("text");
+		//dialog.cancel();
 	}
 
 	public class GetStudentInfo extends AsyncTask<String, Void, String>{
@@ -78,7 +84,6 @@ public class StudentViewAtt extends Activity{
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("studentId", studentId);
-			Log.e("Ret", postParameters.toString());
 			try{
 				JSONObject jo = null;
 				try{
@@ -119,6 +124,7 @@ public class StudentViewAtt extends Activity{
 			}catch(Exception e){
 				Log.e("dib2", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 		@Override

@@ -10,7 +10,6 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 import org.apache.http.NameValuePair;
-import org.apache.http.util.ByteArrayBuffer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,7 +34,6 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 	Button btGetNotes, btDownload;
 	ListView lvNotes;
 	Intent i;
-	//ArrayAdapter<String> adapter;
 
 	DBHandler db;
 	ArrayList<NameValuePair> postParametersA;
@@ -65,7 +63,6 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 			else{
 				int index = spModule.getSelectedItemPosition() - 1;
 				moduleOfferingId = modulesIds.get(index);
-				Log.e("MID", moduleOfferingId);
 				GetNotes getNotes = new GetNotes();
 				getNotes.execute("text");
 				populateSpinner(spNotes, forListViewDisplay);
@@ -118,17 +115,11 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParametersB = DBHandler.prepareParams("moduleOfferingId", moduleOfferingId);
-			Log.e("Working", moduleOfferingId);
 			try{
 				JSONObject jo = null;
-				Log.e("Working", "indfisdnfo");
-				Log.e("Working1", moduleOfferingId);
 				ja = db.executeQuery(DBHandler.GET_MODULE_NOTES, postParametersB);
-				Log.e("Error", ja.toString());
-				//forListViewDisplay.removeAll(forListViewDisplay);
 				for(int i = 0; i < ja.length(); i++){
 					jo = ja.getJSONObject(i);
-					Log.e("Error", jo.toString());
 					urlLinks.add(jo.getString("link"));
 					forListViewDisplay.add(jo.getString("description"));
 				}
@@ -146,11 +137,9 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParametersA= DBHandler.prepareParams("studentId",studentId);
-			Log.e("Error", "In doInBackground");
 			try {
 				JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_STUDENT_CLASSES, postParametersA);
-				Log.e("Error", ja.toString());
 				for(int i = 0; i< ja.length(); i ++){
 					jo = ja.getJSONObject(i);
 					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
@@ -205,39 +194,40 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 		@Override
 		protected String doInBackground(String... params) {
 			try {
-				
 				File root = android.os.Environment.getExternalStorageDirectory();               
 				File dir = new File (root.getAbsolutePath() + "/testing");
 				if(dir.exists()==false) {
 					dir.mkdirs();
 				}
+				name = url.substring(url.lastIndexOf("/")+1, url.length());
 				File file = new File(dir, name);
 				
 				URL urlLink = new URL(url);
-				long startTime = System.currentTimeMillis();
-				Log.e("DownloadManager", "download url:" + urlLink);
-				
 				URLConnection urlConnection = urlLink.openConnection();
 				urlConnection.setReadTimeout(TIMEOUT_CONNECTION);
 				urlConnection.setConnectTimeout(TIMEOUT_SOCKET);
+				int size = urlConnection.getContentLength();
 				
-				Log.e("DownloadManager", "open connection");
 				InputStream inputStream = urlConnection.getInputStream();
-				BufferedInputStream bufferedInputstream = new BufferedInputStream(inputStream, 1024 * 5);
+				BufferedInputStream bufferedInputstream = new BufferedInputStream(inputStream);
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
-				Log.e("DownloadManager", "download begining");
-				//Read bytes to the Buffer until there is nothing more to read(-1).
-				byte[] buffer = new byte[5*1024];
-				int len;
-				while ((len = bufferedInputstream.read()) != -1) {
-					fileOutputStream.write(buffer, 0, len);
-				}
-				Log.e("DownloadManager", "after for loop");
+				
+				byte[] buffer = new byte[size +1];
+				
+				int currentByte = 0;
+				int bytesRead = bufferedInputstream.read(buffer, 0,buffer.length);
+				currentByte = bytesRead;
+				System.out.println("Bytes read in first go.: " + currentByte);
+				do{
+					bytesRead = bufferedInputstream.read(buffer, currentByte, (buffer.length-currentByte));
+					if(bytesRead >= 0){
+						currentByte += bytesRead;
+					}
+				}while(bytesRead > 0);
+				fileOutputStream.write(buffer, 0, buffer.length);
 				fileOutputStream.flush();
-				Log.e("DownloadManager", "flush");
 				fileOutputStream.close();
 				inputStream.close();
-				Log.e("Time", "download completed in "+ ((System.currentTimeMillis() - startTime) / 1000)+ " sec");
 			} catch (IOException e) {
 				Log.d("DownloadManager", "Error: " + e);
 			}

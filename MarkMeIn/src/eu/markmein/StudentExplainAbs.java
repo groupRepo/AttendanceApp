@@ -6,12 +6,15 @@ import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -30,18 +33,21 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forMissedAttendancesSpinner = new ArrayList<String>();
 	ArrayList<Integer> absenceIds = new ArrayList<Integer>();
+	
+	ProgressDialog dialog;
 
 	String studentId, code, date, time, explaination, attendanceId;
 
 	GetMissedAttendance getMissedAttendance;
 	SubmitExplanation submitExplanation;
-
+	
 	DBHandler db;
 
 	Intent i;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StudentExplainAbs.this, "", "Loading...", true);
 		setContentView(R.layout.studentexplainabs);
 		studentId = Login.mUserID;
 		initialize();
@@ -66,12 +72,12 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 		spinnerIn.setAdapter(spinnerArrayAdapter);		
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
 		case R.id.btStuSubmitAbsence:
 			if((spMissedAttendance.getSelectedItemPosition() == 0)||(TextUtils.isEmpty(etExplaination.getText().toString()))){
-				
 				if (spMissedAttendance.getSelectedItemPosition() == 0) {
 					showToast("Select A Class You Were Absent For");
 				}
@@ -79,12 +85,12 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 					etExplaination.setError(getString(R.string.error_field_required));
 				}
 			}else{
+				dialog = ProgressDialog.show(StudentExplainAbs.this, "", "Submitting...", true);
 				int index = spMissedAttendance.getSelectedItemPosition() - 1;
 				attendanceId = absenceIds.get(index).toString();
 				explaination = etExplaination.getText().toString();
 				submitExplanation = new SubmitExplanation();
 				submitExplanation.execute("text");
-				showAlert("Info", "Explanation Logged!\n Return To Main Menu?");
 			}
 			break;
 		case R.id.btStuClearAbsence:
@@ -123,6 +129,7 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -143,13 +150,18 @@ public class StudentExplainAbs extends Activity implements View.OnClickListener 
 			postParameters = DBHandler.prepareParams(keys, values);
 			try {
 				ja = db.executeQuery(DBHandler.SUBMIT_EXPLANATION, postParameters);
+				
+				//showToast("Submitted");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			//showToast("Explanation Logged To Server");
-
-			etExplaination.setText("");
+			dialog.cancel();
 			return null;
+		}
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			etExplaination.setText("");
 		}
 	}
 

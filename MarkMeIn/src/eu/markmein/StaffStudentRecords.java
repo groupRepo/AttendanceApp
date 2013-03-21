@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 	ArrayList<String> forStudentSpinner = new ArrayList<String>();
 	ArrayList<String> studentIDs = new ArrayList<String>();
 
+	ProgressDialog dialog;
+	
 	String studentId;
 	String lecturerId;
 
@@ -38,6 +41,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffStudentRecords.this, "", "Loading...", true);
 		lecturerId = Login.mUserID;
 		setContentView(R.layout.staffstudentrecords);
 		initialize();
@@ -83,6 +87,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 			if(spStudents.getSelectedItemPosition() == 0){
 				showToast("Select A Student");
 			}else{
+				dialog = ProgressDialog.show(StaffStudentRecords.this, "", "Retrieving Information", true);
 				GetData getData = new GetData();
 				GetStudentInfo getStudentInfo = new GetStudentInfo();
 				int index = spStudents.getSelectedItemPosition() - 1;
@@ -111,6 +116,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 			}catch(Exception e){
 				Log.e("dib0", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -123,7 +129,6 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("studentId", studentId);
 			try{
-				//JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_STUDENT_INFO, postParameters);
 				id = ja.getJSONObject(0).getString("id");
 				name = ja.getJSONObject(0).getString("name");
@@ -194,6 +199,7 @@ public class StaffStudentRecords extends Activity implements View.OnClickListene
 			}catch(Exception e){
 				Log.e("dib2", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 		@Override

@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
 	ArrayList<String> modulesIds = new ArrayList<String>();
 
+	ProgressDialog dialog;
+	
 	String code;
 	String lecturerId;
 
@@ -39,6 +42,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffModuleRecords.this, "", "Loading...", true);
 		lecturerId = Login.mUserID;
 		setContentView(R.layout.staffmodulerecords);
 		initialize();
@@ -68,6 +72,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			if(spModule.getSelectedItemPosition() == 0){
 				showToast("Select A Module");
 			}else{
+				dialog = ProgressDialog.show(StaffModuleRecords.this, "", "Retrieving Information", true);
 				GetData getData = new GetData();
 				int index = spModule.getSelectedItemPosition() - 1;
 				code = modulesIds.get(index);
@@ -107,6 +112,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			}catch(Exception e){
 				Log.e("dib", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -150,6 +156,7 @@ public class StaffModuleRecords extends Activity implements View.OnClickListener
 			} catch (Exception e){
 				
 			}
+			dialog.cancel();
 			return null;
 		}
 

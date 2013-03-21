@@ -15,6 +15,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +44,8 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 	private String moduleOfferingCode;
 	private String fullName;
 
+	ProgressDialog dialog;
+	
 	DBHandler db;
 	ArrayList<NameValuePair> postParameters;
 	ArrayList<String> forModuleSpinner = new ArrayList<String>();
@@ -50,7 +53,7 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 	GetStudentModules getStudentModules;
 	String studentId;
 
-	Spinner spModule;
+	Spinner spModuleForTweets;
 	Button btGetTweets, btMainMenu, btPost;
 
 	Intent i;
@@ -63,7 +66,6 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.staffviewfeedback);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		Log.e("Error", "In onCreate 1");
 		try {
 			initialize();
 		} catch (InterruptedException e) {
@@ -81,7 +83,7 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 		btPost.setOnClickListener(this);
 		etTweetText = (EditText) findViewById(R.id.tweetText); 
 		tvTweets = (TextView) findViewById(R.id.tvTweets);
-		spModule = (Spinner) findViewById(R.id.spModule);
+		spModuleForTweets = (Spinner) findViewById(R.id.spModule);
 
 		//twitter
 		cb.setDebugEnabled(true)
@@ -94,7 +96,7 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 		twitter = tf.getInstance();
 		getStudentModules = new GetStudentModules();
 		getStudentModules.execute("tect");
-		populateSpinner(spModule, forModuleSpinner);
+		populateSpinner(spModuleForTweets, forModuleSpinner);
 	}
 
 	private void populateSpinner(Spinner spinnerIn, ArrayList<String> sampleIn) {
@@ -109,10 +111,11 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btGetTweets:
-			if(spModule.getSelectedItemPosition() == 0 ){
+			if(spModuleForTweets.getSelectedItemPosition() == 0 ){
 				showToast("Select A Module");
 			}else{
-				int index = spModule.getSelectedItemPosition() -1;
+				dialog = ProgressDialog.show(StudentTwitter.this, "", "Retreiving Tweets", true);
+				int index = spModuleForTweets.getSelectedItemPosition() -1;
 				moduleOfferingCode = modulesIds.get(index);
 				tvTweets.setText("");
 				GetTweets getTweets;
@@ -125,15 +128,16 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 			startActivity(i);
 			break;
 		case R.id.btPost:
-			if((spModule.getSelectedItemPosition() == 0)||(TextUtils.isEmpty(etTweetText.getText().toString())) ){
-				if(spModule.getSelectedItemPosition() == 0){
+			if((spModuleForTweets.getSelectedItemPosition() == 0)||(TextUtils.isEmpty(etTweetText.getText().toString()))){
+				if(spModuleForTweets.getSelectedItemPosition() == 0){
 					showToast("Select A Module");
 				}
 				if(TextUtils.isEmpty(etTweetText.getText().toString())){
 					etTweetText.setError(getString(R.string.error_field_required));
 				}
 			}else{
-				int indexA = spModule.getSelectedItemPosition() -1;
+				dialog = ProgressDialog.show(StudentTwitter.this, "", "Posting Tweet", true);
+				int indexA = spModuleForTweets.getSelectedItemPosition() -1;
 				moduleOfferingCode = modulesIds.get(indexA);
 				PostTweet postTweet = new PostTweet();
 				postTweet.execute("String");
@@ -166,6 +170,7 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 			} catch (TwitterException e) {
 				Log.e("twitter", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 		@Override
@@ -177,7 +182,6 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 				for(int i = 0; i < h.length; i++){
 					if(h[i].getText().startsWith(moduleOfferingCode)){
 						tweets.add(s.getText());
-						Log.e("postExec", h[i].getText());
 					}
 				}
 			}
@@ -195,11 +199,9 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("studentId",studentId);
-			Log.e("Error", "In doInBackground");
 			try{
 				JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_STUDENT_CLASSES, postParameters);
-				Log.e("Error", ja.toString());
 				for(int i = 0; i< ja.length(); i ++){
 					jo = ja.getJSONObject(i);
 					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
@@ -215,7 +217,6 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 				JSONObject jo1 = null;
 				ja1 = db.executeQuery(DBHandler.GET_NAME, postParameters);
 				jo1 = ja1.getJSONObject(0);
-				Log.e("Error", ja1.toString());
 				fullName = jo1.getString("name");
 			}catch(Exception e){
 				Log.e("Error1", "In doInBackground Exception1" + e.toString());
@@ -234,6 +235,7 @@ public class StudentTwitter extends Activity implements View.OnClickListener{
 			} catch (TwitterException e) {
 
 			}
+			dialog.cancel();
 			return null;
 		}
 

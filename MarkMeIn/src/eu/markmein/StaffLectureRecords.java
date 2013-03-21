@@ -10,6 +10,7 @@ import org.json.JSONException;
 
 import eu.markmein.R;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,12 +25,15 @@ public class StaffLectureRecords extends Activity implements View.OnClickListene
 	DBHandler db;
 	ArrayList<NameValuePair> postParameters;
 	
+	ProgressDialog dialog;
+	
 	Intent i;
 
 	String lecturerId;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffLectureRecords.this, "", "Retrieving Information", true);
 		setContentView(R.layout.stafflecturerecords);
 		lecturerId = Login.mUserID;
 		initialize();
@@ -61,7 +65,6 @@ public class StaffLectureRecords extends Activity implements View.OnClickListene
 		protected String doInBackground(String... params) {
 			db = new DBHandler();
 			JSONArray ja = null;
-			Log.e("lecturerId", lecturerId);
 			postParameters = DBHandler.prepareParams("lecturerId", lecturerId);
 			try{
 				ja = db.executeQuery(DBHandler.GET_BEST_WORST_LECTURE_RECORDS, postParameters);
@@ -78,6 +81,7 @@ public class StaffLectureRecords extends Activity implements View.OnClickListene
 			} catch (JSONException e) {
 				Log.e("Catch3", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 

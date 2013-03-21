@@ -1,6 +1,5 @@
 package eu.markmein;
 
-import eu.markmein.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,8 +50,11 @@ public class StudentMenu extends Activity implements View.OnClickListener {
 			startActivity(i);
 			break;
 		case R.id.btLogout:
-			i = new Intent("eu.markmein.LOGIN");
+			i = new Intent(this, Login.class);
+			i.putExtra("finish", true);
+			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(i);
+			finish();
 			break;
 		}
 	}

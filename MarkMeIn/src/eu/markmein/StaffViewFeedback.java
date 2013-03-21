@@ -15,6 +15,7 @@ import twitter4j.conf.ConfigurationBuilder;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -53,6 +54,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 	Spinner spModule;
 	Button btGetTweets, btMainMenu, btPost;
 
+	ProgressDialog dialog;
 	Intent i;
 
 	TextView tvTweets;
@@ -61,9 +63,9 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		dialog = ProgressDialog.show(StaffViewFeedback.this, "", "Loading...", true);
 		setContentView(R.layout.staffviewfeedback);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		Log.e("Error", "In onCreate 1");
 		try {
 			initialize();
 		} catch (InterruptedException e) {
@@ -95,7 +97,6 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 		getLectMods = new GetLecturersModules();
 		getLectMods.execute("tect");
 		Thread.sleep(10);
-		Log.e("populate", modulesIds.toString());
 		populateSpinner(spModule, forModuleSpinner);
 	}
 
@@ -114,6 +115,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			if(spModule.getSelectedItemPosition() == 0 ){
 				showToast("Select A Module");
 			}else{
+				dialog = ProgressDialog.show(StaffViewFeedback.this, "", "Retrieving Tweets", true);
 				int index = spModule.getSelectedItemPosition() -1;
 				moduleOfferingCode = modulesIds.get(index);
 				//tvTweets.setText("Select A Module");
@@ -135,6 +137,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 					etTweetText.setError(getString(R.string.error_field_required));
 				}
 			}else{
+				dialog = ProgressDialog.show(StaffViewFeedback.this, "", "Posting Tweet", true);
 				int indexA = spModule.getSelectedItemPosition() -1;
 				moduleOfferingCode = modulesIds.get(indexA);
 				PostTweet postTweet = new PostTweet();
@@ -168,6 +171,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			} catch (TwitterException e) {
 				Log.e("twitter", e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 		@Override
@@ -179,7 +183,6 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 				for(int i = 0; i < h.length; i++){
 					if(h[i].getText().startsWith(moduleOfferingCode)){
 						tweets.add(s.getText());
-						Log.e("postExec", h[i].getText());
 					}
 				}
 			}
@@ -197,11 +200,9 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			db = new DBHandler();
 			JSONArray ja = null;
 			postParameters= DBHandler.prepareParams("lecturerId",lecturerId);
-			Log.e("Error", "In doInBackground");
 			try {
 				JSONObject jo = null;
 				ja = db.executeQuery(DBHandler.GET_LECTURERES_CLASSES, postParameters);
-				Log.e("Error", ja.toString());
 				for(int i = 0; i< ja.length(); i ++){
 					jo = ja.getJSONObject(i);
 					forModuleSpinner.add(jo.getString("code") + "-" + jo.getString("name"));
@@ -217,11 +218,11 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 				JSONObject jo1 = null;
 				ja1 = db.executeQuery(DBHandler.GET_NAME, postParameters);
 				jo1 = ja1.getJSONObject(0);
-				Log.e("Error", ja1.toString());
 				fullName = jo1.getString("name");
 			}catch(Exception e){
 				Log.e("Error1", "In doInBackground Exception1" + e.toString());
 			}
+			dialog.cancel();
 			return null;
 		}
 	}
@@ -236,6 +237,7 @@ public class StaffViewFeedback extends Activity implements View.OnClickListener 
 			} catch (TwitterException e) {
 
 			}
+			dialog.cancel();
 			return null;
 		}
 

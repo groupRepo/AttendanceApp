@@ -53,8 +53,11 @@ public class StaffMenu extends Activity implements View.OnClickListener {
 			startActivity(i);
 			break;
 		case R.id.btLogout:
-			i = new Intent("eu.markmein.LOGIN");
+			i = new Intent(this, Login.class);
+			i.putExtra("finish", true);
+			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(i);
+			finish();
 			break;
 		}
 	}

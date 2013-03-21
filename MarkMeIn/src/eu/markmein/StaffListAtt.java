@@ -48,7 +48,7 @@ public class StaffListAtt extends Activity implements View.OnClickListener {
 		tvAttendees.setText("");
 		tvAttendees.append("No. of Attendees: " + list.size() + "\n\n");
 		for(int i = 0; i < list.size(); i++){
-			tvAttendees.append(list.get(i));
+			tvAttendees.append(list.get(i) + "\n");
 		}
 	}
 

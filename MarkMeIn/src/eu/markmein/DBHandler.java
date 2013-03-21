@@ -18,7 +18,7 @@ import org.json.JSONException;
 
 public class DBHandler{
 	
-	private static HttpClient mHttpClient;
+	private HttpClient mHttpClient;
 	private static final String URL = "http://80.93.22.88/phpDatabase/";
 
 	public static final String VALIDATE_LOGIN = "users/validateLogin.php";

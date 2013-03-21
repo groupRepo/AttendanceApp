@@ -52,6 +52,20 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 		setContentView(R.layout.studentviewnotes);
 		initialize();
 	}
+	
+	private void initialize() {
+		studentId = Login.mUserID;
+		spModule = (Spinner) findViewById(R.id.spModule);
+		spNotes = (Spinner) findViewById(R.id.spNotes);
+		spNotes.setVisibility(View.INVISIBLE);
+		btGetNotes = (Button) findViewById(R.id.btGetNotes);
+		btGetNotes.setOnClickListener(this);
+		btDownload = (Button) findViewById(R.id.btDownload);
+		btDownload.setOnClickListener(this);
+		getStudentModules = new GetStudentModules();
+		getStudentModules.execute("tect");
+		populateSpinner(spModule, forModuleSpinner);
+	}
 
 	@Override
 	public void onClick(View v) {
@@ -84,21 +98,6 @@ public class StudentViewNotes extends Activity implements View.OnClickListener{
 			}
 			break;
 		}
-	}
-
-	private void initialize() {
-		studentId = Login.mUserID;
-		spModule = (Spinner) findViewById(R.id.spModule);
-		spNotes = (Spinner) findViewById(R.id.spNotes);
-		spNotes.setVisibility(View.INVISIBLE);
-		btGetNotes = (Button) findViewById(R.id.btGetNotes);
-		btGetNotes.setOnClickListener(this);
-		btDownload = (Button) findViewById(R.id.btDownload);
-		btDownload.setOnClickListener(this);
-		getStudentModules = new GetStudentModules();
-		getStudentModules.execute("tect");
-		populateSpinner(spModule, forModuleSpinner);
-
 	}
 
 	private void populateSpinner(Spinner spinnerIn, ArrayList<String> sampleIn) {

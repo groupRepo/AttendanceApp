@@ -160,10 +160,10 @@ public class StaffViewAbs  extends Activity implements View.OnClickListener {
 			super.onPostExecute(result);
 			tvAbsences.setText("");
 			tvAbsences.append("\nAbsence Explanations for" + studentId + "\n\n");
-			for(int i = 0; i < excuses.size(); i++){
-				tvAbsences.append(excuses.get(i) + "\n\n");
-				//tvAbsences.append("\t" + excuses.get(i+1) + "\n");
-				//tvAbsences.append("\t" + excuses.get(i+2) + "\n");
+			for(int i = 0; i < excuses.size() - 2; i+=3){
+				tvAbsences.append(excuses.get(i) + "\n");
+				tvAbsences.append("\t" + excuses.get(i+1) + "\n");
+				tvAbsences.append("\t" + excuses.get(i+2) + "\n\n");
 			}
 		}
 	}

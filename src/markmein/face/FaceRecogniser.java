@@ -1,4 +1,4 @@
-package ie.markmein.face;
+package eu.markmein.face;
 
 import com.googlecode.javacv.cpp.opencv_contrib.FaceRecognizer;
 
@@ -86,7 +86,8 @@ public class FaceRecogniser {
 	}
 	private void initialSetUp(){
 		recogniser = createLBPHFaceRecognizer();
-		recogniser.set("threshold", 85.0);
+		//recogniser = createLBPHFaceRecognizer(2,16,8,8, 120);
+		//recogniser.set("threshold",90.5);
 	}
 	public boolean isTrained(){
 		return trained;
@@ -124,24 +125,21 @@ public class FaceRecogniser {
 		}
 		return name;
 	}
-	public ArrayList<String> recogniseMany(String aPath){
-		ArrayList<String> names = new ArrayList<String>();
+	public ArrayList<String> recogniseMany(ArrayList<IplImage> aFaces){
+		ArrayList<String> rNames = new ArrayList<String>();
 		if(trained){
-			// Extract faces
-			ArrayList<IplImage> faces = FaceOperations.extractFaces(cvLoadImage(aPath), FaceOperations.getFacesCoords(cvLoadImage(aPath)));
 			//recognise
-			for(IplImage f : faces){
+			for(IplImage f : aFaces){
 				String tempName = null;
 				tempName = recognise(f);
-				
-				// TODO to be tested !!!!!
-				if(tempName != null && !names.contains(tempName)){
-					names.add(tempName);
+				// TODO to be tested !!!!! May need to be changed
+				if(tempName != null && !rNames.contains(tempName)){
+					rNames.add(tempName);
 				}
 			}
 			
 		}
-		return names;
+		return rNames;
 	}
 	public void saveTrainingData(String aPath){
 		recogniser.save(aPath + TR_DATA_FILE);
@@ -155,11 +153,13 @@ public class FaceRecogniser {
 			e.printStackTrace();
 		}
 	}
+	@SuppressWarnings("unchecked")
 	public void loadTrainingDate(String aPath){
 		recogniser.load(aPath + TR_DATA_FILE);
 		try {
 			ObjectInputStream is = new ObjectInputStream(new FileInputStream(aPath + TR_NAMES_FILE));
 			names = (Map<Integer, String>) is.readObject();
+			is.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

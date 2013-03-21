@@ -1,4 +1,4 @@
-package ie.markmein.db;
+package eu.markmein.db;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,16 +18,39 @@ import org.json.JSONException;
 
 public class DBHandler {
 
-	private static HttpClient mHttpClient;
+	private HttpClient mHttpClient;
 	private static final String URL = "http://80.93.22.88/phpDatabase/";
 	
+	/**
+	 * key: code //module offering code
+	 */
 	public static final String GET_MODULE_OFFERING_TRDATA = "module/getModuleOfferingTRDATA.php";
+	/**
+	 * key: code //module offering code
+	 */
+	public static final String GET_STUDENTS_OF_MODULE_OFFERING = "student/getStudetsOfModuleOffering.php";
+	/**
+	 * key: lecturerId //lecturer id
+	 */
+	public static final String GET_LECTURERES_CLASSES = "lecturer/getModuleOfferings.php";
+	/**
+	 * key: moduleOfferingId date time Type
+	 */
+	public static final String ADD_ATTENDANCE = "attendance/addAttendance.php";
+	/**
+	 * key: attendanceId studentId
+	 */
+	public static final String ADD_STUDENT_ATTENDANCE = "attendance/addStudentAttendance.php";
+	/**
+	 * key moduleOfferingId date time
+	 */
+	public static final String GET_ATTENDANCE_ID = "attendance/getAttendanceId.php";
 	
 	public DBHandler() {
 		mHttpClient = new DefaultHttpClient();
 	}
 	
-	public JSONArray executeQuery(String aQuery, ArrayList<NameValuePair> aParams) throws ClientProtocolException, IOException, JSONException{
+	public synchronized JSONArray executeQuery(String aQuery, ArrayList<NameValuePair> aParams) throws ClientProtocolException, IOException, JSONException{
 		HttpPost request = new HttpPost(URL + aQuery);
 		UrlEncodedFormEntity formEntity = new UrlEncodedFormEntity(aParams, "utf-8");
 		request.setEntity(formEntity);
@@ -43,8 +66,13 @@ public class DBHandler {
 			sb.append(line + NL);
 		}
 		in.close();
+		JSONArray result = null;
+		try{
+			result = new JSONArray(sb.toString());
+		} catch(Exception e){
+			
+		}
 		
-		JSONArray result = new JSONArray(sb.toString());
 		return result;
 	}
 	public static ArrayList<NameValuePair> prepareParams(String aKey, String aValue){
